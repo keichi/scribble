@@ -50,7 +50,7 @@ func main() {
 	kami.Get("/api/notes", handler.ListNotes)
 	kami.Post("/api/notes", handler.AddNote)
 	kami.Get("/api/notes/:noteId", handler.GetNote)
-	kami.Post("/api/notes/:noteId", handler.UpdateNote)
+	kami.Put("/api/notes/:noteId", handler.UpdateNote)
 	kami.Delete("/api/notes/:noteId", handler.DeleteNote)
 
 	kami.Serve()
