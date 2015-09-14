@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+	"log"
 	"database/sql"
 
 	"github.com/guregu/kami"
@@ -11,7 +13,7 @@ import (
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/handler"
 	"github.com/keichi/scribble/model"
-	"github.com/keichi/scribble/util"
+
 )
 
 func InitDB() *gorp.DbMap {
@@ -31,12 +33,12 @@ func InitDB() *gorp.DbMap {
 func main() {
 	dbMap := InitDB()
 	defer dbMap.Db.Close()
+	dbMap.TraceOn("[gorp]", log.New(os.Stdout, "scribble: ", log.Lmicroseconds))
 
 	ctx := context.Background()
 	kami.Context = context.WithValue(ctx, "db", dbMap)
 
 	// Middlwares
-	kami.Use("/api/", util.JsonResponseMiddleware)
 	kami.Use("/api/", auth.AuthMiddleware)
 
 	// Authentication APIs

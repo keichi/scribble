@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	"github.com/guregu/kami"
+	"fmt"
 )
 
 type JsonHandler func(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
@@ -36,7 +37,9 @@ func WrapJsonHandler(v interface{}, h JsonHandler) kami.HandlerFunc {
 			input = reflect.New(t).Interface()
 			if err := decoder.Decode(input); err != nil {
 				w.WriteHeader(http.StatusBadRequest)
-				encoder.Encode(map[string]string{"message": err.Error()})
+				encoder.Encode(map[string]string {
+					"message": fmt.Sprintf("json decode fail: %v", err),
+				})
 				return
 			}
 		}
@@ -44,7 +47,9 @@ func WrapJsonHandler(v interface{}, h JsonHandler) kami.HandlerFunc {
 		output, resp := h(ctx, input)
 		if resp != nil {
 			w.WriteHeader(resp.StatusCode)
-			encoder.Encode(map[string]string{"message": resp.Error()})
+			encoder.Encode(map[string]string {
+				"message": resp.Error(),
+			})
 			return
 		}
 		if output == nil {
@@ -54,7 +59,9 @@ func WrapJsonHandler(v interface{}, h JsonHandler) kami.HandlerFunc {
 
 		if err := encoder.Encode(output); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			encoder.Encode(map[string]string{"message": err.Error()})
+			encoder.Encode(map[string]string {
+				"message": fmt.Sprintf("json encode fail: %v", err),
+			})
 			return
 		}
 	}
