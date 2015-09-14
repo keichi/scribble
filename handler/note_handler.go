@@ -1,16 +1,16 @@
 package handler
 
 import (
+	"fmt"
 	"golang.org/x/net/context"
 	"net/http"
 	"strconv"
-	"fmt"
 
 	"gopkg.in/gorp.v1"
 
+	"github.com/guregu/kami"
 	"github.com/keichi/scribble/model"
 	"time"
-	"github.com/guregu/kami"
 )
 
 func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
@@ -77,7 +77,7 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 	db := ctx.Value("db").(*gorp.DbMap)
 	newNote := req.(*model.Note)
 	noteId, err := strconv.Atoi(kami.Param(ctx, "noteId"))
-	
+
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,

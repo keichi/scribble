@@ -12,9 +12,9 @@ import (
 )
 
 type registerRequest struct {
-	Username string		`json:"username"`
-	Password string		`json:"password"`
-	Email string		`json:"email"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
 }
 
 func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
@@ -56,8 +56,8 @@ func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 var Register = WrapJsonHandler(registerRequest{}, register)
 
 type loginRequest struct {
-	Username string		`json:"username"`
-	Password string		`json:"password"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
@@ -116,7 +116,7 @@ func logout(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) 
 		return nil, &ErrorResponse{http.StatusBadRequest, "log out failed"}
 	}
 
-	return map[string]string{"message": "logged out"} , nil
+	return map[string]string{"message": "logged out"}, nil
 }
 
 var Logout = WrapJsonHandler(nil, logout)

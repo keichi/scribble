@@ -1,9 +1,9 @@
 package main
 
 import (
-	"os"
-	"log"
 	"database/sql"
+	"log"
+	"os"
 
 	"github.com/guregu/kami"
 	_ "github.com/mattn/go-sqlite3"
@@ -13,7 +13,6 @@ import (
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/handler"
 	"github.com/keichi/scribble/model"
-
 )
 
 func InitDB() *gorp.DbMap {

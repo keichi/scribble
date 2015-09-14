@@ -1,24 +1,24 @@
 package handler
 
 import (
+	"bytes"
+	"database/sql"
+	"encoding/json"
 	"flag"
-	"os"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"database/sql"
-	"testing"
-	"encoding/json"
-	"io/ioutil"
-	"bytes"
+	"os"
 	"strconv"
+	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 	"gopkg.in/gorp.v1"
-	"github.com/stretchr/testify/assert"
 
-	"github.com/keichi/scribble/model"
 	"github.com/keichi/scribble/auth"
+	"github.com/keichi/scribble/model"
 )
 
 func initDb() *gorp.DbMap {
@@ -41,12 +41,12 @@ func TestMain(m *testing.M) {
 }
 
 func request(t *testing.T, sv *httptest.Server, st int,
-					req interface{}) map[string]interface{} {
+	req interface{}) map[string]interface{} {
 	return requestWithHeader(t, sv, st, req, http.Header{})
 }
 
 func requestWithHeader(t *testing.T, sv *httptest.Server, st int,
-					req  interface{}, hdr http.Header) map[string]interface{} {
+	req interface{}, hdr http.Header) map[string]interface{} {
 	assert := assert.New(t)
 
 	bts, err := json.Marshal(req)
@@ -84,7 +84,7 @@ func TestRegister(t *testing.T) {
 	ctx = context.WithValue(ctx, "db", dbMap)
 
 	handlerFunc := http.HandlerFunc(
-		func (w http.ResponseWriter, r *http.Request) {
+		func(w http.ResponseWriter, r *http.Request) {
 			Register(ctx, w, r)
 		},
 	)
@@ -93,7 +93,7 @@ func TestRegister(t *testing.T) {
 	defer server.Close()
 
 	resp := request(t, server, http.StatusOK,
-		map[string]string {
+		map[string]string{
 			"username": "testuser",
 			"password": "testpassword",
 		},
@@ -101,7 +101,7 @@ func TestRegister(t *testing.T) {
 	assert.Equal(map[string]interface{}{"message": "user created"}, resp)
 
 	resp = request(t, server, http.StatusBadRequest,
-		map[string]string {
+		map[string]string{
 			"username": "",
 			"password": "testpassword",
 		},
@@ -109,7 +109,7 @@ func TestRegister(t *testing.T) {
 	assert.Equal(map[string]interface{}{"message": "username is empty"}, resp)
 
 	resp = request(t, server, http.StatusBadRequest,
-		map[string]string {
+		map[string]string{
 			"username": "testuser",
 			"password": "",
 		},
@@ -134,7 +134,7 @@ func TestLogin(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", authCtx)
 
 	handlerFunc := http.HandlerFunc(
-		func (w http.ResponseWriter, r *http.Request) {
+		func(w http.ResponseWriter, r *http.Request) {
 			Login(ctx, w, r)
 		},
 	)
@@ -143,7 +143,7 @@ func TestLogin(t *testing.T) {
 	defer server.Close()
 
 	resp := request(t, server, http.StatusBadRequest,
-		map[string]string {
+		map[string]string{
 			"username": "",
 			"password": "testpassword",
 		},
@@ -151,7 +151,7 @@ func TestLogin(t *testing.T) {
 	assert.Equal(map[string]interface{}{"message": "username is empty"}, resp)
 
 	resp = request(t, server, http.StatusBadRequest,
-		map[string]string {
+		map[string]string{
 			"username": "testuser",
 			"password": "",
 		},
@@ -160,7 +160,7 @@ func TestLogin(t *testing.T) {
 
 	authCtx.IsLoggedIn = true
 	resp = request(t, server, http.StatusBadRequest,
-		map[string]string {
+		map[string]string{
 			"username": "testuser",
 			"password": "testpassword",
 		},
@@ -181,7 +181,7 @@ func TestLogin(t *testing.T) {
 	assert.Nil(err, "Failed to insert test user")
 
 	resp = request(t, server, http.StatusBadRequest,
-		map[string]string {
+		map[string]string{
 			"username": "test",
 			"password": "test",
 		},
@@ -189,7 +189,7 @@ func TestLogin(t *testing.T) {
 	assert.Equal(map[string]interface{}{"message": "username or password is wrong"}, resp)
 
 	resp = request(t, server, http.StatusOK,
-		map[string]string {
+		map[string]string{
 			"username": "testuser",
 			"password": "testpassword",
 		},
@@ -210,7 +210,7 @@ func TestLogout(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", authCtx)
 
 	handlerFunc := http.HandlerFunc(
-		func (w http.ResponseWriter, r *http.Request) {
+		func(w http.ResponseWriter, r *http.Request) {
 			Logout(ctx, w, r)
 		},
 	)
@@ -219,13 +219,12 @@ func TestLogout(t *testing.T) {
 	defer server.Close()
 
 	resp := request(t, server, http.StatusBadRequest,
-		map[string][]string {},
+		map[string][]string{},
 	)
 	assert.Equal(map[string]interface{}{"message": "not logged in"}, resp)
 
 	authCtx.IsLoggedIn = true
-	const testSessionToken string =
-	"3a11779677f844f581448ba6337225499dae0850c26665a83ae344609157774"
+	const testSessionToken string = "3a11779677f844f581448ba6337225499dae0850c26665a83ae344609157774"
 
 	session := model.Session{
 		0,
