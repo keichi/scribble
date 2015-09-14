@@ -5,12 +5,13 @@ import (
 	"golang.org/x/net/context"
 	"net/http"
 	"strconv"
+	"time"
 
 	"gopkg.in/gorp.v1"
 
 	"github.com/guregu/kami"
+	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/model"
-	"time"
 )
 
 func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
@@ -31,8 +32,14 @@ var ListNotes = WrapJsonHandler(nil, listNotes)
 
 func addNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
+	auth := ctx.Value("auth").(*auth.AuthContext)
 	note := req.(*model.Note)
 
+	if auth.IsLoggedIn {
+		note.OwnerId = auth.User.Id
+	} else {
+		note.OwnerId = 0
+	}
 	note.CreatedAt = time.Now().UnixNano()
 	note.UpdatedAt = time.Now().UnixNano()
 
@@ -97,7 +104,6 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 	note.Title = newNote.Title
 	note.Content = newNote.Content
 	note.OwnerId = newNote.OwnerId
-	note.CreatedAt = newNote.CreatedAt
 	note.UpdatedAt = time.Now().UnixNano()
 
 	if _, err := db.Update(note); err != nil {
