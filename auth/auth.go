@@ -48,6 +48,11 @@ func AuthMiddleware(ctx context.Context, w http.ResponseWriter, r *http.Request)
 	dbMap := ctx.Value("db").(*gorp.DbMap)
 	token := r.Header.Get("X-Session-Token")
 
+	if token == "" {
+		authCtx := &AuthContext{false, &model.User{}, &model.Session{}}
+		return context.WithValue(ctx, "auth", authCtx)
+	}
+
 	var session model.Session
 	if err := dbMap.SelectOne(&session, "select * from sessions where token = ?", token); err != nil {
 		authCtx := &AuthContext{false, &model.User{}, &model.Session{}}
