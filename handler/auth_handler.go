@@ -9,91 +9,81 @@ import (
 
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/model"
-	"github.com/keichi/scribble/util"
 )
 
-func Register(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+type registerRequest struct {
+	Username string		`json:"username"`
+	Password string		`json:"password"`
+	Email string		`json:"email"`
+}
 
-	username := r.Form.Get("username")
-	password := r.Form.Get("password")
-	email := r.Form.Get("email")
-
+func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
+	input := req.(*registerRequest)
 	dbMap := ctx.Value("db").(*gorp.DbMap)
 
-	if username == "" {
-		util.RenderJson(http.StatusBadRequest, map[string]string{"message": "username is empty"}, w)
-		return
+	if input.Username == "" {
+		return nil, &ErrorResponse{http.StatusBadRequest, "username is empty"}
 	}
 
-	if password == "" {
-		util.RenderJson(http.StatusBadRequest, map[string]string{"message": "password is empty", }, w)
-		return
+	if input.Password == "" {
+		return nil, &ErrorResponse{http.StatusBadRequest, "password is empty"}
 	}
 
-	count, err := dbMap.SelectInt("select count(id) from users where username = ?", username)
+	count, err := dbMap.SelectInt("select count(id) from users where username = ?", input.Username)
 	if err != nil {
-		panic(err)
+		return nil, &ErrorResponse{http.StatusInternalServerError, err.Error()}
 	}
 	if count > 0 {
-		util.RenderJson(http.StatusBadRequest, map[string]string{"message": "user already exists"}, w)
+		return nil, &ErrorResponse{http.StatusBadRequest, "user exists"}
 	}
 
 	user := model.User{
 		0,
-		username,
-		auth.HashPassword(username, password),
-		email,
+		input.Username,
+		auth.HashPassword(input.Username, input.Password),
+		input.Email,
 		time.Now().UnixNano(),
 		time.Now().UnixNano(),
 	}
 
 	if err := dbMap.Insert(&user); err != nil {
-		panic(err)
+		return nil, &ErrorResponse{http.StatusInternalServerError, err.Error()}
 	}
 
-	util.RenderJson(http.StatusOK, map[string]string{"message": "user created"}, w)
+	return map[string]string{"message": "user created"}, nil
 }
 
-func Login(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		util.RenderJson(http.StatusBadRequest, map[string]string{"message": "Invalid request format"}, w)
-		return
-	}
+var Register = WrapJsonHandler(registerRequest{}, register)
 
-	username := r.Form.Get("username")
-	password := r.Form.Get("password")
+type loginRequest struct {
+	Username string		`json:"username"`
+	Password string		`json:"password"`
+}
 
+func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
+	input := req.(*loginRequest)
 	dbMap := ctx.Value("db").(*gorp.DbMap)
 	authCtx := ctx.Value("auth").(*auth.AuthContext)
 
 	if authCtx.IsLoggedIn {
-		util.RenderJson(http.StatusBadRequest, map[string]string{"message": "already logged in"}, w)
-		return
+		return nil, &ErrorResponse{http.StatusBadRequest, "already logged in"}
 	}
 
-	if username == "" {
-		util.RenderJson(http.StatusBadRequest, map[string]string{"message": "username is empty"}, w)
-		return
+	if input.Username == "" {
+		return nil, &ErrorResponse{http.StatusBadRequest, "username is empty"}
 	}
 
-	if password == "" {
-		util.RenderJson(http.StatusBadRequest, map[string]string{"message": "password is empty", }, w)
-		return
+	if input.Password == "" {
+		return nil, &ErrorResponse{http.StatusBadRequest, "password is empty"}
 	}
 
 	var user model.User
 
-	passwordHash := auth.HashPassword(username, password)
+	passwordHash := auth.HashPassword(input.Username, input.Password)
 
-	err := dbMap.SelectOne(&user, "select * from users where username = ? and password_hash = ?", username, passwordHash)
+	err := dbMap.SelectOne(&user, "select * from users where username = ? and password_hash = ?", input.Username, passwordHash)
 	if err != nil {
-		util.RenderJson(http.StatusBadRequest, map[string]string{"message": "username or password is wrong"}, w)
-		return
+		return nil, &ErrorResponse{http.StatusBadRequest, "username or password is wrong"}
 	}
 
 	session := model.Session{
@@ -105,26 +95,28 @@ func Login(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := dbMap.Insert(&session); err != nil {
-		panic(err)
+		return nil, &ErrorResponse{http.StatusInternalServerError, err.Error()}
 	}
 
-	util.RenderJson(http.StatusOK, map[string]string{"token":  session.Token}, w)
+	return map[string]string{"token": session.Token}, nil
 }
 
-func Logout(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+var Login = WrapJsonHandler(loginRequest{}, login)
+
+func logout(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	dbMap := ctx.Value("db").(*gorp.DbMap)
 	authCtx := ctx.Value("auth").(*auth.AuthContext)
 
 	if !authCtx.IsLoggedIn {
-		util.RenderJson(http.StatusBadRequest, map[string]string{"message": "not logged in"}, w)
-		return
+		return nil, &ErrorResponse{http.StatusBadRequest, "not logged in"}
 	}
 
 	count, err := dbMap.Delete(authCtx.Session)
 	if count <= 0 || err != nil {
-		util.RenderJson(http.StatusBadRequest, map[string]string{"message": "log out failed"}, w)
-		return
+		return nil, &ErrorResponse{http.StatusBadRequest, "log out failed"}
 	}
 
-	util.RenderJson(http.StatusOK, map[string]string{"message": "logged out"}, w)
+	return map[string]string{"message": "logged out"} , nil
 }
+
+var Logout = WrapJsonHandler(nil, logout)

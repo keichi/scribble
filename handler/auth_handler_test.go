@@ -10,7 +10,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"bytes"
-	"net/url"
 	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -18,8 +17,8 @@ import (
 	"gopkg.in/gorp.v1"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/model"
+	"github.com/keichi/scribble/auth"
 )
 
 func initDb() *gorp.DbMap {
@@ -42,21 +41,23 @@ func TestMain(m *testing.M) {
 }
 
 func request(t *testing.T, sv *httptest.Server, st int,
-					req url.Values) map[string]interface{} {
+					req interface{}) map[string]interface{} {
 	return requestWithHeader(t, sv, st, req, http.Header{})
 }
 
 func requestWithHeader(t *testing.T, sv *httptest.Server, st int,
-					req  url.Values, hdr http.Header) map[string]interface{} {
+					req  interface{}, hdr http.Header) map[string]interface{} {
 	assert := assert.New(t)
 
-	buf := bytes.NewBufferString(req.Encode())
-	request, err := http.NewRequest("POST", sv.URL, buf)
+	bts, err := json.Marshal(req)
+	assert.Nil(err, "Failed to encode request to json")
+
+	request, err := http.NewRequest("POST", sv.URL, bytes.NewBuffer(bts))
 	assert.Nil(err, "Failed to create request")
 
 	request.Header = hdr
-	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Add("Content-Length", strconv.Itoa(len(req.Encode())))
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Content-Length", strconv.Itoa(len(bts)))
 
 	response, err := http.DefaultClient.Do(request)
 	assert.Nil(err, "Failed to do request")
@@ -92,25 +93,25 @@ func TestRegister(t *testing.T) {
 	defer server.Close()
 
 	resp := request(t, server, http.StatusOK,
-		map[string][]string {
-			"username": []string{"testuser"},
-			"password": []string{"testpassword"},
+		map[string]string {
+			"username": "testuser",
+			"password": "testpassword",
 		},
 	)
 	assert.Equal(map[string]interface{}{"message": "user created"}, resp)
 
 	resp = request(t, server, http.StatusBadRequest,
-		map[string][]string {
-			"username": []string{""},
-			"password": []string{"testpassword"},
+		map[string]string {
+			"username": "",
+			"password": "testpassword",
 		},
 	)
 	assert.Equal(map[string]interface{}{"message": "username is empty"}, resp)
 
 	resp = request(t, server, http.StatusBadRequest,
-		map[string][]string {
-			"username": []string{"testuser"},
-			"password": []string{""},
+		map[string]string {
+			"username": "testuser",
+			"password": "",
 		},
 	)
 	assert.Equal(map[string]interface{}{"message": "password is empty"}, resp)
@@ -142,26 +143,26 @@ func TestLogin(t *testing.T) {
 	defer server.Close()
 
 	resp := request(t, server, http.StatusBadRequest,
-		map[string][]string {
-			"username": []string{""},
-			"password": []string{"testpassword"},
+		map[string]string {
+			"username": "",
+			"password": "testpassword",
 		},
 	)
 	assert.Equal(map[string]interface{}{"message": "username is empty"}, resp)
 
 	resp = request(t, server, http.StatusBadRequest,
-		map[string][]string {
-			"username": []string{"testuser"},
-			"password": []string{""},
+		map[string]string {
+			"username": "testuser",
+			"password": "",
 		},
 	)
 	assert.Equal(map[string]interface{}{"message": "password is empty"}, resp)
 
 	authCtx.IsLoggedIn = true
 	resp = request(t, server, http.StatusBadRequest,
-		map[string][]string {
-			"username": []string{"testuser"},
-			"password": []string{"testpassword"},
+		map[string]string {
+			"username": "testuser",
+			"password": "testpassword",
 		},
 	)
 	assert.Equal(map[string]interface{}{"message": "already logged in"}, resp)
@@ -180,17 +181,17 @@ func TestLogin(t *testing.T) {
 	assert.Nil(err, "Failed to insert test user")
 
 	resp = request(t, server, http.StatusBadRequest,
-		map[string][]string {
-			"username": []string{"test"},
-			"password": []string{"test"},
+		map[string]string {
+			"username": "test",
+			"password": "test",
 		},
 	)
 	assert.Equal(map[string]interface{}{"message": "username or password is wrong"}, resp)
 
 	resp = request(t, server, http.StatusOK,
-		map[string][]string {
-			"username": []string{"testuser"},
-			"password": []string{"testpassword"},
+		map[string]string {
+			"username": "testuser",
+			"password": "testpassword",
 		},
 	)
 	assert.True(resp["token"] != "", "Session token must not be empty")
@@ -220,7 +221,7 @@ func TestLogout(t *testing.T) {
 	resp := request(t, server, http.StatusBadRequest,
 		map[string][]string {},
 	)
-	assert.Equal(resp, map[string]interface{}{"message": "not logged in"})
+	assert.Equal(map[string]interface{}{"message": "not logged in"}, resp)
 
 	authCtx.IsLoggedIn = true
 	const testSessionToken string =
@@ -238,5 +239,5 @@ func TestLogout(t *testing.T) {
 	assert.Nil(err, "Failed to insert test session")
 
 	header := http.Header{"X-Session-Token": []string{testSessionToken}}
-	requestWithHeader(t, server, http.StatusBadRequest, url.Values{}, header)
+	requestWithHeader(t, server, http.StatusBadRequest, map[string]string{}, header)
 }

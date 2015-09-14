@@ -8,45 +8,52 @@ import (
 	"gopkg.in/gorp.v1"
 
 	"github.com/keichi/scribble/model"
-	"github.com/keichi/scribble/util"
 )
 
-func ListNotes(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
 
 	var notes []model.Note
 	if _, err := db.Select(&notes, "select * from notes"); err != nil {
-		panic(err)
+		return nil, &ErrorResponse{http.StatusInternalServerError, err.Error()}
 	}
 
-	util.RenderJson(http.StatusOK, notes, w)
+	return notes, nil
 }
 
-func AddNote(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+var ListNotes = WrapJsonHandler(nil, listNotes)
+
+func addNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
+	db := ctx.Value("db").(*gorp.DbMap)
+	note := req.(*model.Note)
+
+	if err := db.Insert(note); err != nil {
+		return nil, &ErrorResponse{http.StatusInternalServerError, err.Error()}
+	}
+
+	return note, nil
 }
 
-func GetNote(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+var AddNote = WrapJsonHandler(model.Note{}, addNote)
+
+func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
 	noteId, err := strconv.Atoi(ctx.Value("noteId").(string))
 
 	if err != nil {
-		util.RenderJson(http.StatusBadRequest, map[string]string {
-			"message": "Failed to get note id",
-		}, w)
-		return
+		return nil, &ErrorResponse{http.StatusBadRequest, err.Error()}
 	}
 
 	var note model.Note
 	err = db.SelectOne(&note, "select * from notes where id = ?", noteId)
 	if err != nil {
-		util.RenderJson(http.StatusBadRequest, map[string]string {
-			"message": "Note with specified id does not exist",
-		}, w)
-		return
+		return nil, &ErrorResponse{http.StatusBadRequest, err.Error()}
 	}
 
-	util.RenderJson(http.StatusOK, note, w)
+	return note, nil
 }
+
+var GetNote = WrapJsonHandler(nil, getNote)
 
 func UpdateNote(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 }
