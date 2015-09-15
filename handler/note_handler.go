@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golang.org/x/net/context"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 
@@ -16,9 +17,38 @@ import (
 
 func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
+	queryParams := ctx.Value("query").(url.Values)
+
+	limit := 10
+	offset := 0
+
+	limitStr := queryParams.Get("limit")
+	if limitStr != "" {
+		i, err := strconv.Atoi(limitStr)
+		if err != nil {
+			return nil, &ErrorResponse{
+				http.StatusInternalServerError,
+				fmt.Sprintf("Invalid limit parameter format: %v", err),
+			}
+		}
+		limit = i
+	}
+
+	offsetStr := queryParams.Get("offset")
+	if offsetStr != "" {
+		i, err := strconv.Atoi(offsetStr)
+		if err != nil {
+			return nil, &ErrorResponse{
+				http.StatusInternalServerError,
+				fmt.Sprintf("Invalid offset parameter format: %v", err),
+			}
+		}
+		offset = i
+	}
 
 	var notes []model.Note
-	if _, err := db.Select(&notes, "select * from notes"); err != nil {
+	_, err := db.Select(&notes, "select * from notes LIMIT ? OFFSET ?", limit, offset)
+	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusInternalServerError,
 			fmt.Sprintf("Query failed: %v", err),

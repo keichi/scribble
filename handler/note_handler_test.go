@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"fmt"
 
 	"github.com/guregu/kami"
 	_ "github.com/mattn/go-sqlite3"
@@ -60,6 +61,44 @@ func TestListNotes(t *testing.T) {
 	assert.Equal("Test Title 1", notes[0].(map[string]interface{})["title"])
 	assert.Equal("Test Title 2", notes[1].(map[string]interface{})["title"])
 	assert.Equal("Test Title 3", notes[2].(map[string]interface{})["title"])
+}
+
+func TestListNotesPagination(t *testing.T) {
+	assert := assert.New(t)
+
+	dbMap := initDb()
+	defer dbMap.Db.Close()
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "db", dbMap)
+
+	for i := 0; i < 100; i++ {
+		dbMap.Insert(&model.Note{
+			Id:        0,
+			Title:     fmt.Sprintf("Test Title %d", i),
+			Content:   "lorem ipsum dolor sit amet consetetur.",
+			OwnerId:   0,
+			CreatedAt: 1442284669000,
+			UpdatedAt: 1442284669000,
+		})
+	}
+
+	kami.Reset()
+	kami.Context = ctx
+	kami.Post("/api/notes", ListNotes)
+	server := httptest.NewServer(kami.Handler())
+	defer server.Close()
+
+	resp := request(t, server.URL+"/api/notes", http.StatusOK, nil)
+	assert.NotNil(resp)
+	assert.EqualValues(10, len(resp.([]interface{})))
+
+	resp = request(t, server.URL+"/api/notes?limit=25", http.StatusOK, nil)
+	assert.NotNil(resp)
+	assert.EqualValues(25, len(resp.([]interface{})))
+
+	resp = request(t, server.URL+"/api/notes?limit=50", http.StatusOK, nil)
+	assert.NotNil(resp)
+	assert.EqualValues(50, len(resp.([]interface{})))
 }
 
 func TestAddNote(t *testing.T) {
