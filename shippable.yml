@@ -3,8 +3,12 @@ language: go
 go:
   - 1.4
 
+before_script:
+  - export PATH=$PATH:$GOPATH/bin
+
 before_install:
   - go get github.com/stretchr/testify/assert
+  - go get github.com/jstemmer/go-junit-report
 
 script:
-  - go test -v ./...
+  - go test -v ./... | go-junit-report > shippable/testresults/junit.xml
