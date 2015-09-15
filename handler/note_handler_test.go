@@ -79,9 +79,9 @@ func TestAddNote(t *testing.T) {
 	defer server.Close()
 
 	resp := request(t, server.URL, http.StatusOK, map[string]interface{}{
-		"title":    "Test Title",
-		"content":  "lorem ipsum dolor sit amet consetetur.",
-		"owner_id": 0,
+		"title":   "Test Title",
+		"content": "lorem ipsum dolor sit amet consetetur.",
+		"ownerId": 0,
 	})
 	assert.NotNil(resp)
 
@@ -121,7 +121,7 @@ func TestGetNote(t *testing.T) {
 	server := httptest.NewServer(kami.Handler())
 	defer server.Close()
 
-	resp := request(t, server.URL + "/api/notes/1", http.StatusOK, nil)
+	resp := request(t, server.URL+"/api/notes/1", http.StatusOK, nil)
 	assert.NotNil(resp)
 
 	note := resp.(map[string]interface{})
@@ -132,6 +132,55 @@ func TestGetNote(t *testing.T) {
 	assert.EqualValues(1442292926000, note["updatedAt"])
 }
 
+func TestUpdateNote(t *testing.T) {
+	assert := assert.New(t)
+
+	dbMap := initDb()
+	defer dbMap.Db.Close()
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "db", dbMap)
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{})
+
+	dbMap.Insert(&model.Note{
+		Id:        0,
+		Title:     "Test Title 1",
+		Content:   "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:   0,
+		CreatedAt: 1442284669000,
+		UpdatedAt: 1442292926000,
+	})
+
+	kami.Reset()
+	kami.Context = ctx
+	kami.Post("/api/notes/:noteId", UpdateNote)
+	server := httptest.NewServer(kami.Handler())
+	defer server.Close()
+
+	resp := request(t, server.URL+"/api/notes/1", http.StatusOK, map[string]interface{}{
+		"title":   "Test Title 2",
+		"content": "hoge piyo hoge piyo.",
+		"ownerId": 1,
+	})
+	assert.NotNil(resp)
+
+	note := resp.(map[string]interface{})
+	assert.Equal("Test Title 2", note["title"])
+	assert.Equal("hoge piyo hoge piyo.", note["content"])
+	assert.EqualValues(1, note["ownerId"])
+	assert.EqualValues(1442284669000, note["createdAt"])
+
+	count, err := dbMap.SelectInt("SELECT COUNT(id) FROM notes")
+	assert.Nil(err)
+	assert.EqualValues(1, count)
+
+	n := new(model.Note)
+	err = dbMap.SelectOne(n, "SELECT * FROM notes")
+	assert.Nil(err)
+	assert.Equal("Test Title 2", n.Title)
+	assert.Equal("hoge piyo hoge piyo.", n.Content)
+	assert.EqualValues(1, n.OwnerId)
+	assert.EqualValues(1442284669000, n.CreatedAt)
+}
 
 func TestDeleteNote(t *testing.T) {
 	assert := assert.New(t)
@@ -161,7 +210,7 @@ func TestDeleteNote(t *testing.T) {
 	server := httptest.NewServer(kami.Handler())
 	defer server.Close()
 
-	request(t, server.URL + "/api/notes/1", http.StatusOK, nil)
+	request(t, server.URL+"/api/notes/1", http.StatusOK, nil)
 
 	count, err = dbMap.SelectInt("SELECT COUNT(id) FROM notes")
 	assert.Nil(err)
