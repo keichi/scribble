@@ -44,6 +44,9 @@ func WrapJsonHandler(v interface{}, h JsonHandler) kami.HandlerFunc {
 			}
 		}
 
+		queryParams := r.URL.Query()
+		ctx = context.WithValue(ctx, "query", queryParams)
+
 		output, resp := h(ctx, input)
 		if resp != nil {
 			w.WriteHeader(resp.StatusCode)
