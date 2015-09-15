@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/guregu/kami"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
@@ -94,4 +95,39 @@ func TestAddNote(t *testing.T) {
 	count, err := dbMap.SelectInt("SELECT COUNT(id) FROM notes")
 	assert.Nil(err)
 	assert.EqualValues(1, count)
+}
+
+func TestGetNote(t *testing.T) {
+	assert := assert.New(t)
+
+	dbMap := initDb()
+	defer dbMap.Db.Close()
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "db", dbMap)
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{})
+
+	dbMap.Insert(&model.Note{
+		Id:        0,
+		Title:     "Test Title 1",
+		Content:   "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:   0,
+		CreatedAt: 1442284669000,
+		UpdatedAt: 1442292926000,
+	})
+
+	kami.Reset()
+	kami.Context = ctx
+	kami.Post("/api/notes/:noteId", GetNote)
+	server := httptest.NewServer(kami.Handler())
+	defer server.Close()
+
+	resp := request(t, server.URL + "/api/notes/1", http.StatusOK, nil)
+	assert.NotNil(resp)
+
+	note := resp.(map[string]interface{})
+	assert.Equal("Test Title 1", note["title"])
+	assert.Equal("lorem ipsum dolor sit amet consetetur.", note["content"])
+	assert.EqualValues(0, note["ownerId"])
+	assert.EqualValues(1442284669000, note["createdAt"])
+	assert.EqualValues(1442292926000, note["updatedAt"])
 }
