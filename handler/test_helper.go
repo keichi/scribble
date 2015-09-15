@@ -42,6 +42,10 @@ func requestWithHeader(t *testing.T, url string, st int,
 	bts, err := json.Marshal(req)
 	assert.Nil(err, "Failed to encode request to json")
 
+	if req == nil {
+		bts = make([]byte, 0)
+	}
+
 	request, err := http.NewRequest("POST", url, bytes.NewBuffer(bts))
 	assert.Nil(err, "Failed to create request")
 
@@ -59,6 +63,11 @@ func requestWithHeader(t *testing.T, url string, st int,
 	assert.Equal(st, response.StatusCode, "Wrong status code")
 
 	var respJson interface{}
+
+	if len(body) == 0 {
+		return respJson
+	}
+
 	err = json.Unmarshal(body, &respJson)
 	assert.Nil(err, "Error while parsing response to JSON")
 
