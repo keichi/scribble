@@ -30,7 +30,7 @@ func TestRegister(t *testing.T) {
 	server := httptest.NewServer(handlerFunc)
 	defer server.Close()
 
-	resp := request(t, server, http.StatusOK,
+	resp := request(t, server.URL, http.StatusOK,
 		map[string]string{
 			"username": "testuser",
 			"password": "testpassword",
@@ -38,7 +38,7 @@ func TestRegister(t *testing.T) {
 	)
 	assert.Equal(map[string]interface{}{"message": "user created"}, resp)
 
-	resp = request(t, server, http.StatusBadRequest,
+	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
 			"username": "",
 			"password": "testpassword",
@@ -46,7 +46,7 @@ func TestRegister(t *testing.T) {
 	)
 	assert.Equal(map[string]interface{}{"message": "username is empty"}, resp)
 
-	resp = request(t, server, http.StatusBadRequest,
+	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
 			"username": "testuser",
 			"password": "",
@@ -80,7 +80,7 @@ func TestLogin(t *testing.T) {
 	server := httptest.NewServer(handlerFunc)
 	defer server.Close()
 
-	resp := request(t, server, http.StatusBadRequest,
+	resp := request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
 			"username": "",
 			"password": "testpassword",
@@ -88,7 +88,7 @@ func TestLogin(t *testing.T) {
 	)
 	assert.Equal(map[string]interface{}{"message": "username is empty"}, resp)
 
-	resp = request(t, server, http.StatusBadRequest,
+	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
 			"username": "testuser",
 			"password": "",
@@ -97,7 +97,7 @@ func TestLogin(t *testing.T) {
 	assert.Equal(map[string]interface{}{"message": "password is empty"}, resp)
 
 	authCtx.IsLoggedIn = true
-	resp = request(t, server, http.StatusBadRequest,
+	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
 			"username": "testuser",
 			"password": "testpassword",
@@ -118,7 +118,7 @@ func TestLogin(t *testing.T) {
 	err := dbMap.Insert(&user)
 	assert.Nil(err, "Failed to insert test user")
 
-	resp = request(t, server, http.StatusBadRequest,
+	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
 			"username": "test",
 			"password": "test",
@@ -126,7 +126,7 @@ func TestLogin(t *testing.T) {
 	)
 	assert.Equal(map[string]interface{}{"message": "username or password is wrong"}, resp)
 
-	resp = request(t, server, http.StatusOK,
+	resp = request(t, server.URL, http.StatusOK,
 		map[string]string{
 			"username": "testuser",
 			"password": "testpassword",
@@ -157,7 +157,7 @@ func TestLogout(t *testing.T) {
 	server := httptest.NewServer(handlerFunc)
 	defer server.Close()
 
-	resp := request(t, server, http.StatusBadRequest,
+	resp := request(t, server.URL, http.StatusBadRequest,
 		map[string][]string{},
 	)
 	assert.Equal(map[string]interface{}{"message": "not logged in"}, resp)
@@ -177,5 +177,5 @@ func TestLogout(t *testing.T) {
 	assert.Nil(err, "Failed to insert test session")
 
 	header := http.Header{"X-Session-Token": []string{testSessionToken}}
-	requestWithHeader(t, server, http.StatusBadRequest, map[string]string{}, header)
+	requestWithHeader(t, server.URL, http.StatusBadRequest, map[string]string{}, header)
 }

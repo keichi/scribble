@@ -51,7 +51,7 @@ func TestListNotes(t *testing.T) {
 	))
 	defer server.Close()
 
-	resp := request(t, server, http.StatusOK, nil)
+	resp := request(t, server.URL, http.StatusOK, nil)
 	assert.NotNil(resp)
 
 	notes := resp.([]interface{})
@@ -77,7 +77,7 @@ func TestAddNote(t *testing.T) {
 	))
 	defer server.Close()
 
-	resp := request(t, server, http.StatusOK, map[string]interface{}{
+	resp := request(t, server.URL, http.StatusOK, map[string]interface{}{
 		"title":    "Test Title",
 		"content":  "lorem ipsum dolor sit amet consetetur.",
 		"owner_id": 0,

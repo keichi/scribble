@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"net/http/httptest"
 	"strconv"
 	"testing"
 
@@ -31,19 +30,19 @@ func initDb() *gorp.DbMap {
 	return dbMap
 }
 
-func request(t *testing.T, sv *httptest.Server, st int,
+func request(t *testing.T, url string, st int,
 	req interface{}) interface{} {
-	return requestWithHeader(t, sv, st, req, http.Header{})
+	return requestWithHeader(t, url, st, req, http.Header{})
 }
 
-func requestWithHeader(t *testing.T, sv *httptest.Server, st int,
+func requestWithHeader(t *testing.T, url string, st int,
 	req interface{}, hdr http.Header) interface{} {
 	assert := assert.New(t)
 
 	bts, err := json.Marshal(req)
 	assert.Nil(err, "Failed to encode request to json")
 
-	request, err := http.NewRequest("POST", sv.URL, bytes.NewBuffer(bts))
+	request, err := http.NewRequest("POST", url, bytes.NewBuffer(bts))
 	assert.Nil(err, "Failed to create request")
 
 	request.Header = hdr
