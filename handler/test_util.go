@@ -32,12 +32,12 @@ func initDb() *gorp.DbMap {
 }
 
 func request(t *testing.T, sv *httptest.Server, st int,
-	req interface{}) map[string]interface{} {
+	req interface{}) interface{} {
 	return requestWithHeader(t, sv, st, req, http.Header{})
 }
 
 func requestWithHeader(t *testing.T, sv *httptest.Server, st int,
-	req interface{}, hdr http.Header) map[string]interface{} {
+	req interface{}, hdr http.Header) interface{} {
 	assert := assert.New(t)
 
 	bts, err := json.Marshal(req)
@@ -59,7 +59,7 @@ func requestWithHeader(t *testing.T, sv *httptest.Server, st int,
 
 	assert.Equal(st, response.StatusCode, "Wrong status code")
 
-	respJson := make(map[string]interface{})
+	var respJson interface{}
 	err = json.Unmarshal(body, &respJson)
 	assert.Nil(err, "Error while parsing response to JSON")
 

@@ -132,7 +132,8 @@ func TestLogin(t *testing.T) {
 			"password": "testpassword",
 		},
 	)
-	assert.True(resp["token"] != "", "Session token must not be empty")
+	token := resp.(map[string]interface{})["token"]
+	assert.True(token != "", "Session token must not be empty")
 }
 
 func TestLogout(t *testing.T) {
