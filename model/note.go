@@ -16,3 +16,6 @@ type Note struct {
 	CreatedAt  int64      `db:"created_at" json:"createdAt,omitempty"`
 	UpdatedAt  int64      `db:"updated_at" json:"updatedAt,omitempty"`
 }
+
+func (note *Note) Authorize(user *User) {
+}
