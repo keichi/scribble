@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"gopkg.in/gorp.v1"
 	"github.com/guregu/kami"
+	"gopkg.in/gorp.v1"
 
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/model"
