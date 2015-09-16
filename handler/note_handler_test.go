@@ -1,10 +1,10 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"fmt"
 
 	"github.com/guregu/kami"
 	_ "github.com/mattn/go-sqlite3"
@@ -71,7 +71,7 @@ func TestListNotesPagination(t *testing.T) {
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
 
-	for i := 0; i < 100; i++ {
+	for i := 1; i <= 100; i++ {
 		dbMap.Insert(&model.Note{
 			Id:        0,
 			Title:     fmt.Sprintf("Test Title %d", i),
@@ -99,6 +99,14 @@ func TestListNotesPagination(t *testing.T) {
 	resp = request(t, server.URL+"/api/notes?limit=50", http.StatusOK, nil)
 	assert.NotNil(resp)
 	assert.EqualValues(50, len(resp.([]interface{})))
+	note := resp.([]interface{})[0].(map[string]interface{})
+	assert.Equal("Test Title 1", note["title"])
+
+	resp = request(t, server.URL+"/api/notes?offset=25&limit=50", http.StatusOK, nil)
+	assert.NotNil(resp)
+	assert.EqualValues(50, len(resp.([]interface{})))
+	note = resp.([]interface{})[0].(map[string]interface{})
+	assert.Equal("Test Title 26", note["title"])
 }
 
 func TestAddNote(t *testing.T) {

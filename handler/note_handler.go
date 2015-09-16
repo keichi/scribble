@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"gopkg.in/gorp.v1"
-
 	"github.com/guregu/kami"
+
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/model"
 )
