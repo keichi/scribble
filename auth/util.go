@@ -15,12 +15,6 @@ import (
 const STRETCH_COUNT int = 1000
 const FIXED_SALT string = "kRAKG5PRXZryyrPnMAXwCfGYHFfxi"
 
-type AuthContext struct {
-	IsLoggedIn bool
-	User       *model.User
-	Session    *model.Session
-}
-
 func HashPassword(username string, password string) string {
 	pwd := []byte(password)
 	salt := []byte(username + FIXED_SALT)
