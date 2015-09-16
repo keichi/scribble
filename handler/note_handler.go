@@ -65,6 +65,13 @@ func addNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 	auth := ctx.Value("auth").(*auth.AuthContext)
 	note := req.(*model.Note)
 
+	if !note.Authorize(auth.User, model.ACTION_CREATE) {
+		return nil, &ErrorResponse{
+			http.StatusUnauthorized,
+			"Unauthorized action",
+		}
+	}
+
 	if auth.IsLoggedIn {
 		note.OwnerId = auth.User.Id
 	} else {
@@ -87,6 +94,7 @@ var AddNote = WrapJsonHandler(model.Note{}, addNote)
 
 func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
+	auth := ctx.Value("auth").(*auth.AuthContext)
 	noteId, err := strconv.Atoi(kami.Param(ctx, "noteId"))
 
 	if err != nil {
@@ -105,6 +113,13 @@ func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 		}
 	}
 
+	if !note.Authorize(auth.User, model.ACTION_READ) {
+		return nil, &ErrorResponse{
+			http.StatusUnauthorized,
+			"Unauthorized action",
+		}
+	}
+
 	return note, nil
 }
 
@@ -112,6 +127,7 @@ var GetNote = WrapJsonHandler(nil, getNote)
 
 func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
+	auth := ctx.Value("auth").(*auth.AuthContext)
 	newNote := req.(*model.Note)
 	noteId, err := strconv.Atoi(kami.Param(ctx, "noteId"))
 
@@ -128,6 +144,13 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
 			fmt.Sprintf("Query failed: %v", err),
+		}
+	}
+
+	if !note.Authorize(auth.User, model.ACTION_UPDATE) {
+		return nil, &ErrorResponse{
+			http.StatusUnauthorized,
+			"Unauthorized action",
 		}
 	}
 
@@ -150,6 +173,7 @@ var UpdateNote = WrapJsonHandler(model.Note{}, updateNote)
 
 func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
+	auth := ctx.Value("auth").(*auth.AuthContext)
 	noteId, err := strconv.Atoi(kami.Param(ctx, "noteId"))
 
 	if err != nil {
@@ -165,6 +189,13 @@ func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
 			fmt.Sprintf("Query failed: %v", err),
+		}
+	}
+
+	if !note.Authorize(auth.User, model.ACTION_READ) {
+		return nil, &ErrorResponse{
+			http.StatusUnauthorized,
+			"Unauthorized action",
 		}
 	}
 
