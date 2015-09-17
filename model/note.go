@@ -24,9 +24,9 @@ func (note *Note) Authorize(user *User, action AuthorizedAction) bool {
 	case ACTION_READ:
 		return note.ShareState == SHARE_STATE_PUBLIC || note.OwnerId == user.Id
 	case ACTION_UPDATE:
-		return note.ShareState == SHARE_STATE_PUBLIC || note.OwnerId == user.Id
+		return note.OwnerId == user.Id
 	case ACTION_DELETE:
-		return note.ShareState == SHARE_STATE_PUBLIC || note.OwnerId == user.Id
+		return note.OwnerId == user.Id
 	}
 
 	return false
