@@ -31,6 +31,7 @@ func WrapJsonHandler(v interface{}, h JsonHandler) kami.HandlerFunc {
 
 		encoder := json.NewEncoder(w)
 		decoder := json.NewDecoder(r.Body)
+		defer r.Body.Close()
 
 		var input interface{}
 		if t != reflect.TypeOf(nil) {
