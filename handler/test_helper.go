@@ -9,6 +9,9 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/goamz/goamz/aws"
+	"github.com/goamz/goamz/s3"
+	"github.com/goamz/goamz/s3/s3test"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/gorp.v1"
 
@@ -28,6 +31,23 @@ func initDB() *gorp.DbMap {
 	dbMap.CreateTables()
 
 	return dbMap
+}
+
+func initS3() *s3.Bucket {
+	srv, err := s3test.NewServer(&s3test.Config{})
+	if err != nil {
+		panic(err)
+	}
+	region := aws.Region{
+		Name:                 "dummy-region-1",
+		S3Endpoint:           srv.URL(),
+		S3LocationConstraint: true,
+	}
+
+	s3 := s3.New(aws.Auth{}, region)
+	bucket := s3.Bucket("scribble-image-store")
+
+	return bucket
 }
 
 func request(t *testing.T, url string, st int,
