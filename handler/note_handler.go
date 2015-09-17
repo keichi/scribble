@@ -17,6 +17,7 @@ import (
 
 func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
+	auth := ctx.Value("auth").(*auth.AuthContext)
 	queryParams := ctx.Value("query").(url.Values)
 
 	limit := 10
@@ -47,7 +48,17 @@ func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorRespons
 	}
 
 	var notes []model.Note
-	_, err := db.Select(&notes, "select * from notes LIMIT ? OFFSET ?", limit, offset)
+	var err error
+	if auth.IsLoggedIn {
+		_, err = db.Select(&notes, `select * from notes where share_state = ?
+				or share_state = ? and owner_id = ? limit ? offset ?`,
+			model.SHARE_STATE_PUBLIC, model.SHARE_STATE_PRIVATE,
+			auth.User.Id, limit, offset)
+	} else {
+		_, err = db.Select(&notes, `select * from notes where share_state = ?
+				limit ? offset ?`,
+			model.SHARE_STATE_PUBLIC, limit, offset)
+	}
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusInternalServerError,
