@@ -192,7 +192,7 @@ func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 		}
 	}
 
-	if !note.Authorize(auth.User, model.ACTION_READ) {
+	if !note.Authorize(auth.User, model.ACTION_DELETE) {
 		return nil, &ErrorResponse{
 			http.StatusUnauthorized,
 			"Unauthorized action",
