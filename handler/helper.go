@@ -10,7 +10,8 @@ import (
 	"github.com/guregu/kami"
 )
 
-type JsonHandler func(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
+// JSONHandler is a generic type for JSON API handlers
+type JSONHandler func(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 
 type ErrorResponse struct {
 	StatusCode int    `json:"-"`
@@ -33,7 +34,8 @@ func (err *ErrorResponse) Render(w http.ResponseWriter) {
 
 type emptyRequest struct{}
 
-func WrapJsonHandler(v interface{}, h JsonHandler) kami.HandlerFunc {
+// WrapJSONHandler wraps JsonHandler as a kami.HandlerFunc
+func WrapJSONHandler(v interface{}, h JSONHandler) kami.HandlerFunc {
 	t := reflect.TypeOf(v)
 
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) {

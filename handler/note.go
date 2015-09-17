@@ -17,7 +17,7 @@ import (
 
 func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
-	auth := ctx.Value("auth").(*auth.AuthContext)
+	auth := ctx.Value("auth").(*auth.Context)
 	queryParams := ctx.Value("query").(url.Values)
 
 	limit := 10
@@ -52,12 +52,12 @@ func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorRespons
 	if auth.IsLoggedIn {
 		_, err = db.Select(&notes, `select * from notes where share_state = ?
 				or share_state = ? and owner_id = ? limit ? offset ?`,
-			model.SHARE_STATE_PUBLIC, model.SHARE_STATE_PRIVATE,
-			auth.User.Id, limit, offset)
+			model.ShareStatePublic, model.ShareStatePrivate,
+			auth.User.ID, limit, offset)
 	} else {
 		_, err = db.Select(&notes, `select * from notes where share_state = ?
 				limit ? offset ?`,
-			model.SHARE_STATE_PUBLIC, limit, offset)
+			model.ShareStatePublic, limit, offset)
 	}
 	if err != nil {
 		return nil, &ErrorResponse{
@@ -69,14 +69,15 @@ func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorRespons
 	return notes, nil
 }
 
-var ListNotes = WrapJsonHandler(nil, listNotes)
+// ListNotes handles list notes requests
+var ListNotes = WrapJSONHandler(nil, listNotes)
 
 func addNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
-	auth := ctx.Value("auth").(*auth.AuthContext)
+	auth := ctx.Value("auth").(*auth.Context)
 	note := req.(*model.Note)
 
-	if !note.Authorize(auth.User, model.ACTION_CREATE) {
+	if !note.Authorize(auth.User, model.ActionCreate) {
 		return nil, &ErrorResponse{
 			http.StatusUnauthorized,
 			"Unauthorized action",
@@ -84,9 +85,9 @@ func addNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 	}
 
 	if auth.IsLoggedIn {
-		note.OwnerId = auth.User.Id
+		note.OwnerID = auth.User.ID
 	} else {
-		note.OwnerId = 0
+		note.OwnerID = 0
 	}
 	note.CreatedAt = time.Now().UnixNano()
 	note.UpdatedAt = time.Now().UnixNano()
@@ -101,12 +102,13 @@ func addNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 	return note, nil
 }
 
-var AddNote = WrapJsonHandler(model.Note{}, addNote)
+// AddNote handles add note requests
+var AddNote = WrapJSONHandler(model.Note{}, addNote)
 
 func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
-	auth := ctx.Value("auth").(*auth.AuthContext)
-	noteId, err := strconv.Atoi(kami.Param(ctx, "noteId"))
+	auth := ctx.Value("auth").(*auth.Context)
+	noteID, err := strconv.Atoi(kami.Param(ctx, "noteId"))
 
 	if err != nil {
 		return nil, &ErrorResponse{
@@ -116,7 +118,7 @@ func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 	}
 
 	note := new(model.Note)
-	err = db.SelectOne(note, "select * from notes where id = ?", noteId)
+	err = db.SelectOne(note, "select * from notes where id = ?", noteID)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
@@ -124,7 +126,7 @@ func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 		}
 	}
 
-	if !note.Authorize(auth.User, model.ACTION_READ) {
+	if !note.Authorize(auth.User, model.ActionRead) {
 		return nil, &ErrorResponse{
 			http.StatusUnauthorized,
 			"Unauthorized action",
@@ -134,13 +136,14 @@ func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 	return note, nil
 }
 
-var GetNote = WrapJsonHandler(nil, getNote)
+// GetNote handles get note requests
+var GetNote = WrapJSONHandler(nil, getNote)
 
 func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
-	auth := ctx.Value("auth").(*auth.AuthContext)
+	auth := ctx.Value("auth").(*auth.Context)
 	newNote := req.(*model.Note)
-	noteId, err := strconv.Atoi(kami.Param(ctx, "noteId"))
+	noteID, err := strconv.Atoi(kami.Param(ctx, "noteId"))
 
 	if err != nil {
 		return nil, &ErrorResponse{
@@ -150,7 +153,7 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 	}
 
 	note := new(model.Note)
-	err = db.SelectOne(note, "select * from notes where id = ?", noteId)
+	err = db.SelectOne(note, "select * from notes where id = ?", noteID)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
@@ -158,7 +161,7 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 		}
 	}
 
-	if !note.Authorize(auth.User, model.ACTION_UPDATE) {
+	if !note.Authorize(auth.User, model.ActionUpdate) {
 		return nil, &ErrorResponse{
 			http.StatusUnauthorized,
 			"Unauthorized action",
@@ -167,7 +170,7 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 
 	note.Title = newNote.Title
 	note.Content = newNote.Content
-	note.OwnerId = newNote.OwnerId
+	note.OwnerID = newNote.OwnerID
 	note.UpdatedAt = time.Now().UnixNano()
 
 	if _, err := db.Update(note); err != nil {
@@ -180,12 +183,13 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 	return note, nil
 }
 
-var UpdateNote = WrapJsonHandler(model.Note{}, updateNote)
+// UpdateNote handles update note requests
+var UpdateNote = WrapJSONHandler(model.Note{}, updateNote)
 
 func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
-	auth := ctx.Value("auth").(*auth.AuthContext)
-	noteId, err := strconv.Atoi(kami.Param(ctx, "noteId"))
+	auth := ctx.Value("auth").(*auth.Context)
+	noteID, err := strconv.Atoi(kami.Param(ctx, "noteId"))
 
 	if err != nil {
 		return nil, &ErrorResponse{
@@ -195,7 +199,7 @@ func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 	}
 
 	note := new(model.Note)
-	err = db.SelectOne(note, "select * from notes where id = ?", noteId)
+	err = db.SelectOne(note, "select * from notes where id = ?", noteID)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
@@ -203,7 +207,7 @@ func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 		}
 	}
 
-	if !note.Authorize(auth.User, model.ACTION_DELETE) {
+	if !note.Authorize(auth.User, model.ActionDelete) {
 		return nil, &ErrorResponse{
 			http.StatusUnauthorized,
 			"Unauthorized action",
@@ -220,4 +224,5 @@ func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 	return nil, nil
 }
 
-var DeleteNote = WrapJsonHandler(nil, deleteNote)
+// DeleteNote handles delete note requests
+var DeleteNote = WrapJSONHandler(nil, deleteNote)

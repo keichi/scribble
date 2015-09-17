@@ -22,27 +22,27 @@ func TestListNotes(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.Context{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
-		Id:        0,
+		ID:        0,
 		Title:     "Test Title 1",
 		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
+		OwnerID:   0,
 		CreatedAt: 1442284669000,
 		UpdatedAt: 1442284669000,
 	}, &model.Note{
-		Id:        0,
+		ID:        0,
 		Title:     "Test Title 2",
 		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
+		OwnerID:   0,
 		CreatedAt: 1442284669000,
 		UpdatedAt: 1442284669000,
 	}, &model.Note{
-		Id:        0,
+		ID:        0,
 		Title:     "Test Title 3",
 		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
+		OwnerID:   0,
 		CreatedAt: 1442284669000,
 		UpdatedAt: 1442284669000,
 	})
@@ -71,14 +71,14 @@ func TestListNotesPagination(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.Context{User: &model.User{}})
 
 	for i := 1; i <= 100; i++ {
 		dbMap.Insert(&model.Note{
-			Id:        0,
+			ID:        0,
 			Title:     fmt.Sprintf("Test Title %d", i),
 			Content:   "lorem ipsum dolor sit amet consetetur.",
-			OwnerId:   0,
+			OwnerID:   0,
 			CreatedAt: 1442284669000,
 			UpdatedAt: 1442284669000,
 		})
@@ -118,7 +118,7 @@ func TestAddNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.Context{User: &model.User{}})
 
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -153,13 +153,13 @@ func TestGetNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.Context{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
-		Id:        0,
+		ID:        0,
 		Title:     "Test Title 1",
 		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
+		OwnerID:   0,
 		CreatedAt: 1442284669000,
 		UpdatedAt: 1442292926000,
 	})
@@ -188,13 +188,13 @@ func TestUpdateNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.Context{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
-		Id:        0,
+		ID:        0,
 		Title:     "Test Title 1",
 		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
+		OwnerID:   0,
 		CreatedAt: 1442284669000,
 		UpdatedAt: 1442292926000,
 	})
@@ -227,7 +227,7 @@ func TestUpdateNote(t *testing.T) {
 	assert.Nil(err)
 	assert.Equal("Test Title 2", n.Title)
 	assert.Equal("hoge piyo hoge piyo.", n.Content)
-	assert.EqualValues(1, n.OwnerId)
+	assert.EqualValues(1, n.OwnerID)
 	assert.EqualValues(1442284669000, n.CreatedAt)
 }
 
@@ -238,13 +238,13 @@ func TestDeleteNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.Context{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
-		Id:        0,
+		ID:        0,
 		Title:     "Test Title 1",
 		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
+		OwnerID:   0,
 		CreatedAt: 1442284669000,
 		UpdatedAt: 1442292926000,
 	})

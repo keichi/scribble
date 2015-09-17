@@ -21,7 +21,7 @@ func TestListNotesAuth(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{
+	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
 			1,
@@ -35,27 +35,27 @@ func TestListNotesAuth(t *testing.T) {
 	})
 
 	dbMap.Insert(&model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 1",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    1,
-		ShareState: model.SHARE_STATE_PRIVATE,
+		OwnerID:    1,
+		ShareState: model.ShareStatePrivate,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 2",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    2,
-		ShareState: model.SHARE_STATE_PRIVATE,
+		OwnerID:    2,
+		ShareState: model.ShareStatePrivate,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 3",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    2,
-		ShareState: model.SHARE_STATE_PUBLIC,
+		OwnerID:    2,
+		ShareState: model.ShareStatePublic,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	})
@@ -83,7 +83,7 @@ func TestGetNoteAuth(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{
+	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
 			1,
@@ -97,27 +97,27 @@ func TestGetNoteAuth(t *testing.T) {
 	})
 
 	dbMap.Insert(&model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 1",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    1,
-		ShareState: model.SHARE_STATE_PRIVATE,
+		OwnerID:    1,
+		ShareState: model.ShareStatePrivate,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 2",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    2,
-		ShareState: model.SHARE_STATE_PRIVATE,
+		OwnerID:    2,
+		ShareState: model.ShareStatePrivate,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 3",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    2,
-		ShareState: model.SHARE_STATE_PUBLIC,
+		OwnerID:    2,
+		ShareState: model.ShareStatePublic,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	})
@@ -143,7 +143,7 @@ func TestUpdateNoteAuth(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{
+	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
 			1,
@@ -157,27 +157,27 @@ func TestUpdateNoteAuth(t *testing.T) {
 	})
 
 	dbMap.Insert(&model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 1",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    1,
-		ShareState: model.SHARE_STATE_PRIVATE,
+		OwnerID:    1,
+		ShareState: model.ShareStatePrivate,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 2",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    2,
-		ShareState: model.SHARE_STATE_PRIVATE,
+		OwnerID:    2,
+		ShareState: model.ShareStatePrivate,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 3",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    2,
-		ShareState: model.SHARE_STATE_PUBLIC,
+		OwnerID:    2,
+		ShareState: model.ShareStatePublic,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	})
@@ -220,7 +220,7 @@ func TestDeleteNoteAuth(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{
+	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
 			1,
@@ -234,27 +234,27 @@ func TestDeleteNoteAuth(t *testing.T) {
 	})
 
 	dbMap.Insert(&model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 1",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    1,
-		ShareState: model.SHARE_STATE_PRIVATE,
+		OwnerID:    1,
+		ShareState: model.ShareStatePrivate,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 2",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    2,
-		ShareState: model.SHARE_STATE_PRIVATE,
+		OwnerID:    2,
+		ShareState: model.ShareStatePrivate,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		Id:         0,
+		ID:         0,
 		Title:      "Test Title 3",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:    2,
-		ShareState: model.SHARE_STATE_PUBLIC,
+		OwnerID:    2,
+		ShareState: model.ShareStatePublic,
 		CreatedAt:  1442284669000,
 		UpdatedAt:  1442284669000,
 	})

@@ -10,6 +10,7 @@ import (
 	"github.com/guregu/kami"
 )
 
+// Panic handles panics happened in kami handler functions
 func Panic(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
 

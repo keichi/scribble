@@ -23,20 +23,20 @@ const (
 
 func AddImage(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	db := ctx.Value("db").(*gorp.DbMap)
-	auth := ctx.Value("auth").(*auth.AuthContext)
+	auth := ctx.Value("auth").(*auth.Context)
 	bucket := ctx.Value("s3").(*s3.Bucket)
 
-	var ownerId int64
+	var ownerID int64
 	if auth.IsLoggedIn {
-		ownerId = auth.User.Id
+		ownerID = auth.User.ID
 	}
 
 	image := &model.Image{
-		Id:          0,
+		ID:          0,
 		ContentType: r.Header.Get("Content-Type"),
-		Uuid:        uuid.NewV4().String(),
-		OwnerId:     ownerId,
-		ShareState:  model.SHARE_STATE_PUBLIC,
+		UUID:        uuid.NewV4().String(),
+		OwnerID:     ownerID,
+		ShareState:  model.ShareStatePublic,
 		CreatedAt:   time.Now().UnixNano(),
 		UpdatedAt:   time.Now().UnixNano(),
 	}
@@ -59,7 +59,7 @@ func AddImage(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = bucket.PutReader(image.Uuid, r.Body, int64(length),
+	err = bucket.PutReader(image.UUID, r.Body, int64(length),
 		image.ContentType, s3.PublicRead, s3.Options{})
 	defer r.Body.Close()
 
@@ -89,8 +89,8 @@ func AddImage(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
 func getImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
-	auth := ctx.Value("auth").(*auth.AuthContext)
-	imageId, err := strconv.Atoi(kami.Param(ctx, "imageId"))
+	auth := ctx.Value("auth").(*auth.Context)
+	imageID, err := strconv.Atoi(kami.Param(ctx, "imageId"))
 
 	if err != nil {
 		return nil, &ErrorResponse{
@@ -100,7 +100,7 @@ func getImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 	}
 
 	image := new(model.Image)
-	err = db.SelectOne(image, "select * from images where id = ?", imageId)
+	err = db.SelectOne(image, "select * from images where id = ?", imageID)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
@@ -108,7 +108,7 @@ func getImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 		}
 	}
 
-	if !image.Authorize(auth.User, model.ACTION_READ) {
+	if !image.Authorize(auth.User, model.ActionRead) {
 		return nil, &ErrorResponse{
 			http.StatusUnauthorized,
 			"Unauthorized action",
@@ -118,13 +118,13 @@ func getImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 	return image, nil
 }
 
-var GetImage = WrapJsonHandler(nil, getImage)
+var GetImage = WrapJSONHandler(nil, getImage)
 
 func updateImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
-	auth := ctx.Value("auth").(*auth.AuthContext)
+	auth := ctx.Value("auth").(*auth.Context)
 	newImage := req.(*model.Image)
-	imageId, err := strconv.Atoi(kami.Param(ctx, "imageId"))
+	imageID, err := strconv.Atoi(kami.Param(ctx, "imageId"))
 
 	if err != nil {
 		return nil, &ErrorResponse{
@@ -134,7 +134,7 @@ func updateImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 	}
 
 	image := new(model.Image)
-	err = db.SelectOne(image, "select * from images where id = ?", imageId)
+	err = db.SelectOne(image, "select * from images where id = ?", imageID)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
@@ -142,7 +142,7 @@ func updateImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 		}
 	}
 
-	if !image.Authorize(auth.User, model.ACTION_UPDATE) {
+	if !image.Authorize(auth.User, model.ActionUpdate) {
 		return nil, &ErrorResponse{
 			http.StatusUnauthorized,
 			"Unauthorized action",
@@ -150,9 +150,9 @@ func updateImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 	}
 
 	image.ContentType = newImage.ContentType
-	image.Uuid = newImage.Uuid
-	image.OwnerId = newImage.OwnerId
-	image.NoteId = newImage.NoteId
+	image.UUID = newImage.UUID
+	image.OwnerID = newImage.OwnerID
+	image.NoteID = newImage.NoteID
 	image.ShareState = newImage.ShareState
 	image.UpdatedAt = time.Now().UnixNano()
 
@@ -166,13 +166,13 @@ func updateImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 	return image, nil
 }
 
-var UpdateImage = WrapJsonHandler(model.Image{}, updateImage)
+var UpdateImage = WrapJSONHandler(model.Image{}, updateImage)
 
 func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
-	auth := ctx.Value("auth").(*auth.AuthContext)
+	auth := ctx.Value("auth").(*auth.Context)
 	bucket := ctx.Value("s3").(*s3.Bucket)
-	imageId, err := strconv.Atoi(kami.Param(ctx, "imageId"))
+	imageID, err := strconv.Atoi(kami.Param(ctx, "imageId"))
 
 	if err != nil {
 		return nil, &ErrorResponse{
@@ -182,7 +182,7 @@ func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 	}
 
 	image := new(model.Image)
-	err = db.SelectOne(image, "select * from images where id = ?", imageId)
+	err = db.SelectOne(image, "select * from images where id = ?", imageID)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
@@ -190,14 +190,14 @@ func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 		}
 	}
 
-	if !image.Authorize(auth.User, model.ACTION_DELETE) {
+	if !image.Authorize(auth.User, model.ActionDelete) {
 		return nil, &ErrorResponse{
 			http.StatusUnauthorized,
 			"Unauthorized action",
 		}
 	}
 
-	err = bucket.Del(image.Uuid)
+	err = bucket.Del(image.UUID)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusInternalServerError,
@@ -216,4 +216,4 @@ func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 	return nil, nil
 }
 
-var DeleteImage = WrapJsonHandler(nil, deleteImage)
+var DeleteImage = WrapJSONHandler(nil, deleteImage)

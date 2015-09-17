@@ -5,19 +5,19 @@ import (
 	"log"
 	"os"
 
+	"github.com/goamz/goamz/aws"
+	"github.com/goamz/goamz/s3"
 	"github.com/guregu/kami"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/net/context"
 	"gopkg.in/gorp.v1"
-	"github.com/goamz/goamz/aws"
-	"github.com/goamz/goamz/s3"
 
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/handler"
 	"github.com/keichi/scribble/model"
 )
 
-func InitDB() *gorp.DbMap {
+func initDB() *gorp.DbMap {
 	db, err := sql.Open("sqlite3", "scribble.db")
 	if err != nil {
 		panic(err)
@@ -33,7 +33,7 @@ func InitDB() *gorp.DbMap {
 	return dbMap
 }
 
-func InitS3() *s3.Bucket {
+func initS3() *s3.Bucket {
 	auth, err := aws.EnvAuth()
 	if err != nil {
 		panic(err)
@@ -46,11 +46,11 @@ func InitS3() *s3.Bucket {
 }
 
 func main() {
-	dbMap := InitDB()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	dbMap.TraceOn("[gorp]", log.New(os.Stdout, "scribble: ", log.Lmicroseconds))
 
-	bucket := InitS3()
+	bucket := initS3()
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -60,7 +60,7 @@ func main() {
 	kami.PanicHandler = handler.Panic
 
 	// Middlwares
-	kami.Use("/api/", auth.AuthMiddleware)
+	kami.Use("/api/", auth.Middleware)
 
 	// Authentication APIs
 	kami.Post("/api/register", handler.Register)

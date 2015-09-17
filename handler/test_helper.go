@@ -62,14 +62,14 @@ func requestWithHeader(t *testing.T, url string, st int,
 
 	assert.Equal(st, response.StatusCode, "Wrong status code")
 
-	var respJson interface{}
+	var respJSON interface{}
 
 	if len(body) == 0 {
-		return respJson
+		return respJSON
 	}
 
-	err = json.Unmarshal(body, &respJson)
+	err = json.Unmarshal(body, &respJSON)
 	assert.Nil(err, "Error while parsing response to JSON")
 
-	return respJson
+	return respJSON
 }

@@ -1,7 +1,8 @@
 package model
 
+// User holds various data on an user
 type User struct {
-	Id           int64  `db:"id" json:"id,omitempty"`
+	ID           int64  `db:"id" json:"id,omitempty"`
 	Username     string `db:"username" json:"username"`
 	PasswordHash string `db:"password_hash" json:"-"`
 	Email        string `db:"email" json:"email"`

@@ -53,7 +53,8 @@ func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 	return map[string]string{"message": "user created"}, nil
 }
 
-var Register = WrapJsonHandler(registerRequest{}, register)
+// Register handles user registration requests
+var Register = WrapJSONHandler(registerRequest{}, register)
 
 type loginRequest struct {
 	Username string `json:"username"`
@@ -63,7 +64,7 @@ type loginRequest struct {
 func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	input := req.(*loginRequest)
 	dbMap := ctx.Value("db").(*gorp.DbMap)
-	authCtx := ctx.Value("auth").(*auth.AuthContext)
+	authCtx := ctx.Value("auth").(*auth.Context)
 
 	if authCtx.IsLoggedIn {
 		return nil, &ErrorResponse{http.StatusBadRequest, "already logged in"}
@@ -89,7 +90,7 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	session := model.Session{
 		0,
 		auth.NewToken(),
-		user.Id,
+		user.ID,
 		time.Now().UnixNano(),
 		time.Now().UnixNano(),
 	}
@@ -101,11 +102,12 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	return map[string]string{"token": session.Token}, nil
 }
 
-var Login = WrapJsonHandler(loginRequest{}, login)
+// Login handles user login requests
+var Login = WrapJSONHandler(loginRequest{}, login)
 
 func logout(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	dbMap := ctx.Value("db").(*gorp.DbMap)
-	authCtx := ctx.Value("auth").(*auth.AuthContext)
+	authCtx := ctx.Value("auth").(*auth.Context)
 
 	if !authCtx.IsLoggedIn {
 		return nil, &ErrorResponse{http.StatusBadRequest, "not logged in"}
@@ -119,4 +121,5 @@ func logout(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) 
 	return map[string]string{"message": "logged out"}, nil
 }
 
-var Logout = WrapJsonHandler(nil, logout)
+// Logout handles user logout requests
+var Logout = WrapJSONHandler(nil, logout)

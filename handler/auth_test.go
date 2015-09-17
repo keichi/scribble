@@ -65,7 +65,7 @@ func TestLogin(t *testing.T) {
 	dbMap := initDb()
 	defer dbMap.Db.Close()
 
-	authCtx := &auth.AuthContext{false, &model.User{}, &model.Session{}}
+	authCtx := &auth.Context{false, &model.User{}, &model.Session{}}
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -142,7 +142,7 @@ func TestLogout(t *testing.T) {
 	dbMap := initDb()
 	defer dbMap.Db.Close()
 
-	authCtx := &auth.AuthContext{false, &model.User{}, &model.Session{}}
+	authCtx := &auth.Context{false, &model.User{}, &model.Session{}}
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
