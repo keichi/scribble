@@ -15,7 +15,7 @@ import (
 	"github.com/keichi/scribble/model"
 )
 
-func initDb() *gorp.DbMap {
+func initDB() *gorp.DbMap {
 	db, err := sql.Open("sqlite3", ":memory:")
 	if err != nil {
 		panic(err)

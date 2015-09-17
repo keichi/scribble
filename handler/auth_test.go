@@ -16,7 +16,7 @@ import (
 func TestRegister(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -62,7 +62,7 @@ func TestRegister(t *testing.T) {
 func TestLogin(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 
 	authCtx := &auth.Context{false, &model.User{}, &model.Session{}}
@@ -139,7 +139,7 @@ func TestLogin(t *testing.T) {
 func TestLogout(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 
 	authCtx := &auth.Context{false, &model.User{}, &model.Session{}}

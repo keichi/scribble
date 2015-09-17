@@ -17,7 +17,7 @@ import (
 func TestListNotesAuth(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -79,7 +79,7 @@ func TestListNotesAuth(t *testing.T) {
 func TestGetNoteAuth(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -139,7 +139,7 @@ func TestGetNoteAuth(t *testing.T) {
 func TestUpdateNoteAuth(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -216,7 +216,7 @@ func TestUpdateNoteAuth(t *testing.T) {
 func TestDeleteNoteAuth(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)

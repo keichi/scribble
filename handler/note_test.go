@@ -18,7 +18,7 @@ import (
 func TestListNotes(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -67,7 +67,7 @@ func TestListNotes(t *testing.T) {
 func TestListNotesPagination(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -114,7 +114,7 @@ func TestListNotesPagination(t *testing.T) {
 func TestAddNote(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -149,7 +149,7 @@ func TestAddNote(t *testing.T) {
 func TestGetNote(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -184,7 +184,7 @@ func TestGetNote(t *testing.T) {
 func TestUpdateNote(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
@@ -234,7 +234,7 @@ func TestUpdateNote(t *testing.T) {
 func TestDeleteNote(t *testing.T) {
 	assert := assert.New(t)
 
-	dbMap := initDb()
+	dbMap := initDB()
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
