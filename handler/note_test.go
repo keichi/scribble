@@ -22,7 +22,7 @@ func TestListNotes(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
 		Id:        0,
@@ -71,7 +71,7 @@ func TestListNotesPagination(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
 
 	for i := 1; i <= 100; i++ {
 		dbMap.Insert(&model.Note{
@@ -118,7 +118,7 @@ func TestAddNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
 
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -153,7 +153,7 @@ func TestGetNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
 		Id:        0,
@@ -188,7 +188,7 @@ func TestUpdateNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
 		Id:        0,
@@ -238,7 +238,7 @@ func TestDeleteNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
 		Id:        0,
