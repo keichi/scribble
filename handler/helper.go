@@ -21,6 +21,15 @@ func (err *ErrorResponse) Error() string {
 	return err.Message
 }
 
+func (err *ErrorResponse) Render(w http.ResponseWriter) {
+	encoder := json.NewEncoder(w)
+
+	w.WriteHeader(err.StatusCode)
+	encoder.Encode(map[string]string{
+		"message": err.Error(),
+	})
+}
+
 type emptyRequest struct{}
 
 func WrapJsonHandler(v interface{}, h JsonHandler) kami.HandlerFunc {
@@ -50,10 +59,7 @@ func WrapJsonHandler(v interface{}, h JsonHandler) kami.HandlerFunc {
 
 		output, resp := h(ctx, input)
 		if resp != nil {
-			w.WriteHeader(resp.StatusCode)
-			encoder.Encode(map[string]string{
-				"message": resp.Error(),
-			})
+			resp.Render(w)
 			return
 		}
 		if output == nil {
