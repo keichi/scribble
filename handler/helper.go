@@ -24,6 +24,7 @@ func (err *ErrorResponse) Error() string {
 func (err *ErrorResponse) Render(w http.ResponseWriter) {
 	encoder := json.NewEncoder(w)
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(err.StatusCode)
 	encoder.Encode(map[string]string{
 		"message": err.Error(),
