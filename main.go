@@ -9,7 +9,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/net/context"
 	"gopkg.in/gorp.v1"
-	"github.com/rlmcpherson/s3gof3r"
+	"github.com/goamz/goamz/aws"
+	"github.com/goamz/goamz/s3"
 
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/handler"
@@ -32,13 +33,13 @@ func InitDB() *gorp.DbMap {
 	return dbMap
 }
 
-func InitS3() *s3gof3r.Bucket {
-	keys, err := s3gof3r.EnvKeys()
+func InitS3() *s3.Bucket {
+	auth, err := aws.EnvAuth()
 	if err != nil {
 		panic(err)
 	}
 
-	s3 := s3gof3r.New("", keys)
+	s3 := s3.New(auth, aws.APNortheast)
 	bucket := s3.Bucket("scribble-image-store")
 
 	return bucket

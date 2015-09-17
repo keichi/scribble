@@ -7,15 +7,14 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/goamz/goamz/s3"
 	"github.com/guregu/kami"
-	"github.com/rlmcpherson/s3gof3r"
 	"github.com/satori/go.uuid"
 	"gopkg.in/gorp.v1"
 
+	"encoding/json"
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/model"
-	"io"
-	"encoding/json"
 )
 
 const (
@@ -25,7 +24,7 @@ const (
 func AddImage(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	db := ctx.Value("db").(*gorp.DbMap)
 	auth := ctx.Value("auth").(*auth.AuthContext)
-	bucket := ctx.Value("s3").(*s3gof3r.Bucket)
+	bucket := ctx.Value("s3").(*s3.Bucket)
 
 	var ownerId int64
 	if auth.IsLoggedIn {
@@ -60,17 +59,8 @@ func AddImage(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s3w, err := bucket.PutWriter(image.Uuid, nil, nil)
-	if err != nil {
-		resp := ErrorResponse{
-			http.StatusInternalServerError,
-			fmt.Sprintf("Error starting write: %v", err),
-		}
-		resp.Render(w)
-		return
-	}
-
-	_, err = io.CopyN(s3w, r.Body, int64(length))
+	err = bucket.PutReader(image.Uuid, r.Body, int64(length),
+		image.ContentType, s3.PublicRead, s3.Options{})
 	defer r.Body.Close()
 
 	if err != nil {
@@ -180,7 +170,7 @@ var UpdateImage = WrapJsonHandler(model.Image{}, updateImage)
 func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
 	auth := ctx.Value("auth").(*auth.AuthContext)
-	bucket := ctx.Value("s3").(*s3gof3r.Bucket)
+	bucket := ctx.Value("s3").(*s3.Bucket)
 	imageId, err := strconv.Atoi(kami.Param(ctx, "imageId"))
 
 	if err != nil {
@@ -206,7 +196,7 @@ func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 		}
 	}
 
-	err = bucket.Delete(image.Uuid)
+	err = bucket.Del(image.Uuid)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusInternalServerError,
@@ -214,7 +204,7 @@ func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 		}
 	}
 
-	_, err = db.Delete(image);
+	_, err = db.Delete(image)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusInternalServerError,
