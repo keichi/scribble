@@ -18,6 +18,7 @@ import (
 )
 
 func initDB() *gorp.DbMap {
+	// TODO Use MySQL at production environment
 	db, err := sql.Open("sqlite3", "scribble.db")
 	if err != nil {
 		panic(err)
@@ -48,6 +49,8 @@ func initS3() *s3.Bucket {
 func main() {
 	dbMap := initDB()
 	defer dbMap.Db.Close()
+
+	// TODO Trace SQL only during development
 	dbMap.TraceOn("[gorp]", log.New(os.Stdout, "scribble: ", log.Lmicroseconds))
 
 	bucket := initS3()
@@ -74,7 +77,7 @@ func main() {
 	kami.Put("/api/notes/:noteId", handler.UpdateNote)
 	kami.Delete("/api/notes/:noteId", handler.DeleteNote)
 
-	// Note APIs
+	// Image APIs
 	kami.Post("/api/images", handler.AddImage)
 	kami.Get("/api/images/:imageId", handler.GetImage)
 	kami.Delete("/api/images/:imageId", handler.DeleteImage)

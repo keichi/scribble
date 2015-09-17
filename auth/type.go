@@ -11,7 +11,7 @@ type Context struct {
 	Session    *model.Session
 }
 
-// Authorizer is an interface for models that authorizes requested action
+// Authorizer is an interface for models that authorizes requested actions
 type Authorizer interface {
 	Authorize(user *model.User, action model.AuthorizedAction) bool
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/keichi/scribble/model"
 )
 
+// TODO Read these values from environment variables
 const strechCount int = 1000
 const fixedSalt string = "kRAKG5PRXZryyrPnMAXwCfGYHFfxi"
 
