@@ -25,10 +25,10 @@ func initDB() *gorp.DbMap {
 	}
 
 	dbMap := &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
-	dbMap.AddTableWithName(model.User{}, "users").SetKeys(true, "Id")
-	dbMap.AddTableWithName(model.Session{}, "sessions").SetKeys(true, "Id")
-	dbMap.AddTableWithName(model.Note{}, "notes").SetKeys(true, "Id")
-	dbMap.AddTableWithName(model.Image{}, "images").SetKeys(true, "Id")
+	dbMap.AddTableWithName(model.User{}, "users").SetKeys(true, "ID")
+	dbMap.AddTableWithName(model.Session{}, "sessions").SetKeys(true, "ID")
+	dbMap.AddTableWithName(model.Note{}, "notes").SetKeys(true, "ID")
+	dbMap.AddTableWithName(model.Image{}, "images").SetKeys(true, "ID")
 	dbMap.CreateTablesIfNotExists()
 
 	return dbMap
