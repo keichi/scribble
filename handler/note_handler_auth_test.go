@@ -21,28 +21,43 @@ func TestListNotesAuth(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{
+		true,
+		&model.User{
+			1,
+			"testuser",
+			"000000",
+			"test@emaple.com",
+			1442284669000,
+			1442284669000,
+		},
+		&model.Session{},
+	})
 
 	dbMap.Insert(&model.Note{
-		Id:        0,
-		Title:     "Test Title 1",
-		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
-		CreatedAt: 1442284669000,
-		UpdatedAt: 1442284669000,
+		Id:         0,
+		Title:      "Test Title 1",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    1,
+		ShareState: model.SHARE_STATE_PRIVATE,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		Id:        0,
-		Title:     "Test Title 2",
-		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
-		CreatedAt: 1442284669000,
-		UpdatedAt: 1442284669000,
+		Id:         0,
+		Title:      "Test Title 2",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    2,
+		ShareState: model.SHARE_STATE_PRIVATE,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		Id:        0,
-		Title:     "Test Title 3",
-		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
-		CreatedAt: 1442284669000,
-		UpdatedAt: 1442284669000,
+		Id:         0,
+		Title:      "Test Title 3",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    2,
+		ShareState: model.SHARE_STATE_PUBLIC,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
 	})
 
 	server := httptest.NewServer(http.HandlerFunc(
@@ -56,45 +71,9 @@ func TestListNotesAuth(t *testing.T) {
 	assert.NotNil(resp)
 
 	notes := resp.([]interface{})
-	assert.Equal(len(notes), 3)
+	assert.EqualValues(2, len(notes))
 	assert.Equal("Test Title 1", notes[0].(map[string]interface{})["title"])
-	assert.Equal("Test Title 2", notes[1].(map[string]interface{})["title"])
-	assert.Equal("Test Title 3", notes[2].(map[string]interface{})["title"])
-}
-
-func TestAddNoteAuth(t *testing.T) {
-	assert := assert.New(t)
-
-	dbMap := initDb()
-	defer dbMap.Db.Close()
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{})
-
-	server := httptest.NewServer(http.HandlerFunc(
-		func(w http.ResponseWriter, r *http.Request) {
-			AddNote(ctx, w, r)
-		},
-	))
-	defer server.Close()
-
-	resp := request(t, server.URL, http.StatusOK, map[string]interface{}{
-		"title":   "Test Title",
-		"content": "lorem ipsum dolor sit amet consetetur.",
-		"ownerId": 0,
-	})
-	assert.NotNil(resp)
-
-	note := resp.(map[string]interface{})
-	assert.Equal("Test Title", note["title"])
-	assert.Equal("lorem ipsum dolor sit amet consetetur.", note["content"])
-	assert.EqualValues(0, note["ownerId"])
-	assert.NotZero(note["createdAt"])
-	assert.NotZero(note["updatedAt"])
-
-	count, err := dbMap.SelectInt("SELECT COUNT(id) FROM notes")
-	assert.Nil(err)
-	assert.EqualValues(1, count)
+	assert.Equal("Test Title 3", notes[1].(map[string]interface{})["title"])
 }
 
 func TestGetNoteAuth(t *testing.T) {
@@ -104,15 +83,43 @@ func TestGetNoteAuth(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{
+		true,
+		&model.User{
+			1,
+			"testuser",
+			"000000",
+			"test@emaple.com",
+			1442284669000,
+			1442284669000,
+		},
+		&model.Session{},
+	})
 
 	dbMap.Insert(&model.Note{
-		Id:        0,
-		Title:     "Test Title 1",
-		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
-		CreatedAt: 1442284669000,
-		UpdatedAt: 1442292926000,
+		Id:         0,
+		Title:      "Test Title 1",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    1,
+		ShareState: model.SHARE_STATE_PRIVATE,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
+	}, &model.Note{
+		Id:         0,
+		Title:      "Test Title 2",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    2,
+		ShareState: model.SHARE_STATE_PRIVATE,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
+	}, &model.Note{
+		Id:         0,
+		Title:      "Test Title 3",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    2,
+		ShareState: model.SHARE_STATE_PUBLIC,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
 	})
 
 	kami.Reset()
@@ -124,12 +131,9 @@ func TestGetNoteAuth(t *testing.T) {
 	resp := request(t, server.URL+"/api/notes/1", http.StatusOK, nil)
 	assert.NotNil(resp)
 
-	note := resp.(map[string]interface{})
-	assert.Equal("Test Title 1", note["title"])
-	assert.Equal("lorem ipsum dolor sit amet consetetur.", note["content"])
-	assert.EqualValues(0, note["ownerId"])
-	assert.EqualValues(1442284669000, note["createdAt"])
-	assert.EqualValues(1442292926000, note["updatedAt"])
+	request(t, server.URL+"/api/notes/2", http.StatusUnauthorized, nil)
+
+	request(t, server.URL+"/api/notes/3", http.StatusOK, nil)
 }
 
 func TestUpdateNoteAuth(t *testing.T) {
@@ -139,15 +143,43 @@ func TestUpdateNoteAuth(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{
+		true,
+		&model.User{
+			1,
+			"testuser",
+			"000000",
+			"test@emaple.com",
+			1442284669000,
+			1442284669000,
+		},
+		&model.Session{},
+	})
 
 	dbMap.Insert(&model.Note{
-		Id:        0,
-		Title:     "Test Title 1",
-		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
-		CreatedAt: 1442284669000,
-		UpdatedAt: 1442292926000,
+		Id:         0,
+		Title:      "Test Title 1",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    1,
+		ShareState: model.SHARE_STATE_PRIVATE,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
+	}, &model.Note{
+		Id:         0,
+		Title:      "Test Title 2",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    2,
+		ShareState: model.SHARE_STATE_PRIVATE,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
+	}, &model.Note{
+		Id:         0,
+		Title:      "Test Title 3",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    2,
+		ShareState: model.SHARE_STATE_PUBLIC,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
 	})
 
 	kami.Reset()
@@ -169,17 +201,16 @@ func TestUpdateNoteAuth(t *testing.T) {
 	assert.EqualValues(1, note["ownerId"])
 	assert.EqualValues(1442284669000, note["createdAt"])
 
-	count, err := dbMap.SelectInt("SELECT COUNT(id) FROM notes")
-	assert.Nil(err)
-	assert.EqualValues(1, count)
-
-	n := new(model.Note)
-	err = dbMap.SelectOne(n, "SELECT * FROM notes")
-	assert.Nil(err)
-	assert.Equal("Test Title 2", n.Title)
-	assert.Equal("hoge piyo hoge piyo.", n.Content)
-	assert.EqualValues(1, n.OwnerId)
-	assert.EqualValues(1442284669000, n.CreatedAt)
+	request(t, server.URL+"/api/notes/2", http.StatusUnauthorized, map[string]interface{}{
+		"title":   "Test Title 2",
+		"content": "hoge piyo hoge piyo.",
+		"ownerId": 1,
+	})
+	request(t, server.URL+"/api/notes/3", http.StatusUnauthorized, map[string]interface{}{
+		"title":   "Test Title 2",
+		"content": "hoge piyo hoge piyo.",
+		"ownerId": 1,
+	})
 }
 
 func TestDeleteNoteAuth(t *testing.T) {
@@ -189,20 +220,44 @@ func TestDeleteNoteAuth(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{})
-
-	dbMap.Insert(&model.Note{
-		Id:        0,
-		Title:     "Test Title 1",
-		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerId:   0,
-		CreatedAt: 1442284669000,
-		UpdatedAt: 1442292926000,
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{
+		true,
+		&model.User{
+			1,
+			"testuser",
+			"000000",
+			"test@emaple.com",
+			1442284669000,
+			1442284669000,
+		},
+		&model.Session{},
 	})
 
-	count, err := dbMap.SelectInt("SELECT COUNT(id) FROM notes")
-	assert.Nil(err)
-	assert.EqualValues(1, count)
+	dbMap.Insert(&model.Note{
+		Id:         0,
+		Title:      "Test Title 1",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    1,
+		ShareState: model.SHARE_STATE_PRIVATE,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
+	}, &model.Note{
+		Id:         0,
+		Title:      "Test Title 2",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    2,
+		ShareState: model.SHARE_STATE_PRIVATE,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
+	}, &model.Note{
+		Id:         0,
+		Title:      "Test Title 3",
+		Content:    "lorem ipsum dolor sit amet consetetur.",
+		OwnerId:    2,
+		ShareState: model.SHARE_STATE_PUBLIC,
+		CreatedAt:  1442284669000,
+		UpdatedAt:  1442284669000,
+	})
 
 	kami.Reset()
 	kami.Context = ctx
@@ -211,8 +266,10 @@ func TestDeleteNoteAuth(t *testing.T) {
 	defer server.Close()
 
 	request(t, server.URL+"/api/notes/1", http.StatusOK, nil)
+	request(t, server.URL+"/api/notes/2", http.StatusUnauthorized, nil)
+	request(t, server.URL+"/api/notes/3", http.StatusUnauthorized, nil)
 
-	count, err = dbMap.SelectInt("SELECT COUNT(id) FROM notes")
+	count, err := dbMap.SelectInt("SELECT COUNT(id) FROM notes")
 	assert.Nil(err)
-	assert.EqualValues(0, count)
+	assert.EqualValues(2, count)
 }

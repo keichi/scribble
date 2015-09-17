@@ -22,6 +22,7 @@ func TestListNotes(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
 
 	dbMap.Insert(&model.Note{
 		Id:        0,
@@ -57,7 +58,7 @@ func TestListNotes(t *testing.T) {
 	assert.NotNil(resp)
 
 	notes := resp.([]interface{})
-	assert.Equal(len(notes), 3)
+	assert.EqualValues(3, len(notes))
 	assert.Equal("Test Title 1", notes[0].(map[string]interface{})["title"])
 	assert.Equal("Test Title 2", notes[1].(map[string]interface{})["title"])
 	assert.Equal("Test Title 3", notes[2].(map[string]interface{})["title"])
@@ -70,6 +71,7 @@ func TestListNotesPagination(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
 
 	for i := 1; i <= 100; i++ {
 		dbMap.Insert(&model.Note{
@@ -116,7 +118,7 @@ func TestAddNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
 
 	server := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -151,7 +153,7 @@ func TestGetNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
 
 	dbMap.Insert(&model.Note{
 		Id:        0,
@@ -186,7 +188,7 @@ func TestUpdateNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
 
 	dbMap.Insert(&model.Note{
 		Id:        0,
@@ -236,7 +238,7 @@ func TestDeleteNote(t *testing.T) {
 	defer dbMap.Db.Close()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "db", dbMap)
-	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{})
+	ctx = context.WithValue(ctx, "auth", &auth.AuthContext{User:&model.User{}})
 
 	dbMap.Insert(&model.Note{
 		Id:        0,
