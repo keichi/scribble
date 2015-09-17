@@ -40,7 +40,7 @@ func NewToken() string {
 
 func AuthMiddleware(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
 	dbMap := ctx.Value("db").(*gorp.DbMap)
-	token := r.Header.Get("X-Session-Token")
+	token := r.Header.Get("X-Scribble-Session")
 
 	if token == "" {
 		authCtx := &AuthContext{false, &model.User{}, &model.Session{}}
