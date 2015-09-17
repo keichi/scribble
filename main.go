@@ -80,6 +80,7 @@ func main() {
 	// Image APIs
 	kami.Post("/api/images", handler.AddImage)
 	kami.Get("/api/images/:imageId", handler.GetImage)
+	kami.Put("/api/images/:imageId", handler.UpdateImage)
 	kami.Delete("/api/images/:imageId", handler.DeleteImage)
 
 	kami.Serve()
