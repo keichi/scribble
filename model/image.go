@@ -2,7 +2,7 @@ package model
 
 // Image is an image attached to a note
 type Image struct {
-	ID          int64      `db:"id" json"id,omitempty"`
+	ID          int64      `db:"id" json:"id,omitempty"`
 	ContentType string     `db:"content_type" json:"contentType"`
 	UUID        string     `db:"uuid" json:"uuid"`
 	NoteID      int64      `db:"note_id" json:"noteId,omitempty"`

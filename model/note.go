@@ -12,7 +12,7 @@ const (
 
 // Note is a single markdown note
 type Note struct {
-	ID         int64      `db:"id" json"id,omitempty"`
+	ID         int64      `db:"id" json:"id,omitempty"`
 	Title      string     `db:"title" json:"title"`
 	Content    string     `db:"content" json:"content"`
 	OwnerID    int64      `db:"owner_id" json:"ownerId"`
