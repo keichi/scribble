@@ -11,6 +11,7 @@ type Session struct {
 	ID        int64  `db:"id"`
 	Token     string `db:"token"`
 	UserID    int64  `db:"user_id"`
+	ExpiresAt int64  `db:"expires_at"`
 	CreatedAt int64  `db:"created_at"`
 	UpdatedAt int64  `db:"updated_at"`
 }

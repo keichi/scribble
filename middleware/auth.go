@@ -2,11 +2,13 @@ package middleware
 
 import (
 	"net/http"
+	"time"
 
 	"golang.org/x/net/context"
 	"gopkg.in/gorp.v1"
 
 	"github.com/keichi/scribble/auth"
+	"github.com/keichi/scribble/handler"
 	"github.com/keichi/scribble/model"
 )
 
@@ -33,6 +35,15 @@ func Auth(ctx context.Context, w http.ResponseWriter, r *http.Request) context.C
 			Session:    &model.Session{},
 		}
 		return context.WithValue(ctx, "auth", authCtx)
+	}
+
+	if session.ExpiresAt >= time.Now().UnixNano() {
+		resp := &handler.ErrorResponse{
+			http.StatusBadRequest,
+			"Session has expired",
+		}
+		resp.Render(w)
+		return nil
 	}
 
 	var user model.User

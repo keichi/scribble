@@ -32,7 +32,7 @@ func TestRegister(t *testing.T) {
 
 	resp := request(t, server.URL, http.StatusOK,
 		map[string]string{
-			"email": "test@example.com",
+			"email":    "test@example.com",
 			"password": "testpassword",
 		},
 	)
@@ -40,7 +40,7 @@ func TestRegister(t *testing.T) {
 
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"email": "",
+			"email":    "",
 			"password": "testpassword",
 		},
 	)
@@ -48,7 +48,7 @@ func TestRegister(t *testing.T) {
 
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"email": "test@example.com",
+			"email":    "test@example.com",
 			"password": "",
 		},
 	)
@@ -82,7 +82,7 @@ func TestLogin(t *testing.T) {
 
 	resp := request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"email": "",
+			"email":    "",
 			"password": "testpassword",
 		},
 	)
@@ -90,7 +90,7 @@ func TestLogin(t *testing.T) {
 
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"email": "test@example.com",
+			"email":    "test@example.com",
 			"password": "",
 		},
 	)
@@ -99,7 +99,7 @@ func TestLogin(t *testing.T) {
 	authCtx.IsLoggedIn = true
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"email": "test@example.com",
+			"email":    "test@example.com",
 			"password": "testpassword",
 		},
 	)
@@ -116,7 +116,7 @@ func TestLogin(t *testing.T) {
 
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"email": "test@exmaple.com",
+			"email":    "test@exmaple.com",
 			"password": "test",
 		},
 	)
@@ -124,7 +124,7 @@ func TestLogin(t *testing.T) {
 
 	resp = request(t, server.URL, http.StatusOK,
 		map[string]string{
-			"email": "test@example.com",
+			"email":    "test@example.com",
 			"password": "testpassword",
 		},
 	)

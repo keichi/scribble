@@ -8,6 +8,12 @@ import (
 
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/model"
+	"time"
+)
+
+const (
+	// Invalidate session after this period (milli seconds)
+	sessionPeriod = 7 * 24 * 60 * 60 * 1000
 )
 
 type registerRequest struct {
@@ -36,7 +42,7 @@ func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 	}
 
 	user := model.User{
-		Email:     input.Email,
+		Email:        input.Email,
 		PasswordHash: auth.HashPassword(input.Email, input.Password),
 	}
 
@@ -51,7 +57,7 @@ func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 var Register = wrapJSONHandler(registerRequest{}, register)
 
 type loginRequest struct {
-	Email string `json:"email"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
@@ -82,15 +88,19 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	}
 
 	session := model.Session{
-		Token:  auth.NewToken(),
-		UserID: user.ID,
+		Token:     auth.NewToken(),
+		UserID:    user.ID,
+		ExpiresAt: time.Now().Add(sessionPeriod * time.Millisecond).UnixNano(),
 	}
 
 	if err := dbMap.Insert(&session); err != nil {
 		return nil, &ErrorResponse{http.StatusInternalServerError, err.Error()}
 	}
 
-	return map[string]string{"token": session.Token}, nil
+	return map[string]string{
+		"token":          session.Token,
+		"session_period": string(sessionPeriod),
+	}, nil
 }
 
 // Login handles user login requests

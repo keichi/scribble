@@ -10,6 +10,7 @@ CREATE TABLE sessions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   token VARCHAR(32),
   user_id INT64,
+  expires_at INT64,
   created_at INT64,
   updated_at INT64
 );
