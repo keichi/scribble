@@ -65,6 +65,7 @@ func main() {
 	// Middlwares
 	kami.Use("/api/", middleware.Auth)
 	kami.Use("/api/notes/:noteId", middleware.CheckIfNoteExists)
+	kami.Use("/api/notes/:noteId/images/:imageId", middleware.CheckIfImageExists)
 
 	// Authentication APIs
 	kami.Post("/api/register", handler.Register)
@@ -79,10 +80,10 @@ func main() {
 	kami.Delete("/api/notes/:noteId", handler.DeleteNote)
 
 	// Image APIs
-	kami.Post("/api/images", handler.AddImage)
-	kami.Get("/api/images/:imageId", handler.GetImage)
-	kami.Put("/api/images/:imageId", handler.UpdateImage)
-	kami.Delete("/api/images/:imageId", handler.DeleteImage)
+	kami.Post("/api/notes/:noteId/images", handler.AddImage)
+	kami.Get("/api/notes/:noteId/images/:imageId", handler.GetImage)
+	kami.Put("/api/notes/:noteId/images/:imageId", handler.UpdateImage)
+	kami.Delete("/api/notes/:noteId/images/:imageId", handler.DeleteImage)
 
 	kami.Serve()
 }

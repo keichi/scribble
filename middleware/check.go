@@ -13,7 +13,7 @@ import (
 )
 
 // CheckIfNoteExists middleware checks if a note with the  specified id exists
-// It also ensures the note id is an integer
+// It also ensures the note id is a valid integer
 func CheckIfNoteExists(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
 	db := ctx.Value("db").(*gorp.DbMap)
 	noteID, err := strconv.Atoi(kami.Param(ctx, "noteId"))
@@ -33,6 +33,48 @@ func CheckIfNoteExists(ctx context.Context, w http.ResponseWriter, r *http.Reque
 		resp := &handler.ErrorResponse{
 			http.StatusBadRequest,
 			fmt.Sprintf("Requested note does not exist"),
+		}
+		resp.Render(w)
+		return nil
+	case err != nil:
+		resp := &handler.ErrorResponse{
+			http.StatusBadRequest,
+			fmt.Sprintf("Query failed: %v", err),
+		}
+		resp.Render(w)
+		return nil
+	}
+
+	return ctx
+}
+
+// CheckIfImageExists middleware checks if an image with the  specified id exists
+// It also ensures the image id is a valid integer
+func CheckIfImageExists(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
+	if CheckIfNoteExists(ctx, w, r) == nil {
+		return nil
+	}
+
+	db := ctx.Value("db").(*gorp.DbMap)
+	noteID, _ := strconv.Atoi(kami.Param(ctx, "noteId"))
+	imageID, err := strconv.Atoi(kami.Param(ctx, "imageId"))
+
+	if err != nil {
+		resp := &handler.ErrorResponse{
+			http.StatusBadRequest,
+			fmt.Sprintf("Invalid image id format: %v", err),
+		}
+		resp.Render(w)
+		return nil
+	}
+
+	count, err := db.SelectInt(`select count(id) from images where id = ?
+								and note_id = ?`, imageID, noteID)
+	switch {
+	case count <= 0:
+		resp := &handler.ErrorResponse{
+			http.StatusBadRequest,
+			fmt.Sprintf("Requested image does not exist"),
 		}
 		resp.Render(w)
 		return nil
