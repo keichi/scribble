@@ -12,6 +12,7 @@ type User struct {
 	Username     string `db:"username" json:"username"`
 	PasswordHash string `db:"password_hash" json:"-"`
 	Email        string `db:"email" json:"email"`
+	Notes        []Note `db:"-" json:"notes"`
 	CreatedAt    int64  `db:"created_at" json:"createdAt,omitempty"`
 	UpdatedAt    int64  `db:"updated_at" json:"updatedAt,omitempty"`
 }
@@ -23,6 +24,18 @@ func (user *User) PreDelete(s gorp.SqlExecutor) error {
 		return err
 	}
 
+	return nil
+}
+
+// PostGet is fired after the entity is acquired from the database
+func (user *User) PostGet(s gorp.SqlExecutor) error {
+	var notes []Note
+	_, err := s.Select(&notes, "select * from notes where owner_id = ?", user.ID)
+	if err != nil {
+		return err
+	}
+
+	user.Notes = notes
 	return nil
 }
 
