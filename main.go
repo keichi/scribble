@@ -11,6 +11,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/net/context"
 	"gopkg.in/gorp.v1"
+	"github.com/goamz/goamz/s3/s3test"
 
 	"github.com/keichi/scribble/handler"
 	"github.com/keichi/scribble/middleware"
@@ -35,13 +36,29 @@ func initDB() *gorp.DbMap {
 }
 
 func initS3() *s3.Bucket {
-	auth, err := aws.EnvAuth()
+//	auth, err := aws.EnvAuth()
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	s3 := s3.New(auth, aws.APNortheast)
+//	bucket := s3.Bucket("scribble-image-store")
+//
+//	return bucket
+
+	// TODO Fake S3 server -- only use it during development
+	srv, err := s3test.NewServer(&s3test.Config{})
 	if err != nil {
 		panic(err)
 	}
+	region := aws.Region{
+		Name:                 "dummy-region-1",
+		S3Endpoint:           srv.URL(),
+		S3LocationConstraint: true,
+	}
 
-	s3 := s3.New(auth, aws.APNortheast)
-	bucket := s3.Bucket("scribble-image-store")
+	bucket := s3.New(aws.Auth{}, region).Bucket("scribble-image-store")
+	bucket.PutBucket(s3.PublicRead)
 
 	return bucket
 }
