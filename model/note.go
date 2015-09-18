@@ -1,5 +1,9 @@
 package model
 
+import (
+	"gopkg.in/gorp.v1"
+)
+
 // ShareState represents the scope of disclosure of an entity
 type ShareState int8
 
@@ -17,6 +21,7 @@ type Note struct {
 	Content    string     `db:"content" json:"content"`
 	OwnerID    int64      `db:"owner_id" json:"ownerId"`
 	ShareState ShareState `db:"share_state" json:"share_state"`
+	Images     []Image    `db:"-" json:"images"`
 	CreatedAt  int64      `db:"created_at" json:"createdAt,omitempty"`
 	UpdatedAt  int64      `db:"updated_at" json:"updatedAt,omitempty"`
 }
@@ -35,4 +40,15 @@ func (note *Note) Authorize(user *User, action AuthorizedAction) bool {
 	}
 
 	return false
+}
+
+func (note *Note) PostGet(s gorp.SqlExecutor) error {
+	var images []Image
+	_, err := s.Select(&images, "select * from images where note_id = ?", note.ID)
+	if err != nil {
+		return err
+	}
+
+	note.Images = images
+	return nil
 }
