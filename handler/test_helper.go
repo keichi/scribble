@@ -61,24 +61,24 @@ func requestWithHeader(t *testing.T, url string, st int,
 	assert := assert.New(t)
 
 	bts, err := json.Marshal(req)
-	assert.Nil(err, "Failed to encode request to json")
+	assert.Nil(err, "Failed to encode request to JSON: %v", err)
 
 	if req == nil {
 		bts = make([]byte, 0)
 	}
 
 	request, err := http.NewRequest("POST", url, bytes.NewBuffer(bts))
-	assert.Nil(err, "Failed to create request")
+	assert.Nil(err, "Failed to create request: %v", err)
 
 	request.Header = hdr
 	request.Header.Add("Content-Type", "application/json")
 	request.Header.Add("Content-Length", strconv.Itoa(len(bts)))
 
 	response, err := http.DefaultClient.Do(request)
-	assert.Nil(err, "Failed to do request")
+	assert.Nil(err, "Failed to execute request: %v", err)
 
 	body, err := ioutil.ReadAll(response.Body)
-	assert.Nil(err, "Error while reading resp body")
+	assert.Nil(err, "Error while reading resp body: %v", err)
 	defer response.Body.Close()
 
 	assert.Equal(st, response.StatusCode, "Wrong status code")
@@ -90,7 +90,7 @@ func requestWithHeader(t *testing.T, url string, st int,
 	}
 
 	err = json.Unmarshal(body, &respJSON)
-	assert.Nil(err, "Error while parsing response to JSON")
+	assert.Nil(err, "Error while parsing response to JSON: %v", err)
 
 	return respJSON
 }
