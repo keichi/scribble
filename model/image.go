@@ -1,4 +1,9 @@
 package model
+import (
+	"time"
+
+	"gopkg.in/gorp.v1"
+)
 
 // Image is an image attached to a note
 type Image struct {
@@ -25,4 +30,17 @@ func (image *Image) Authorize(user *User, action AuthorizedAction) bool {
 	}
 
 	return false
+}
+
+// PreInsert is fired before the entity is being inserted
+func (image *Image) PreInsert(s gorp.SqlExecutor) error {
+	image.CreatedAt = time.Now().UnixNano()
+	image.UpdatedAt = image.CreatedAt
+	return nil
+}
+
+// PreUpdate is fired before the entity is being updated
+func (image *Image) PreUpdate(s gorp.SqlExecutor) error {
+	image.UpdatedAt = time.Now().UnixNano()
+	return nil
 }

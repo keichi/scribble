@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"time"
 
 	"github.com/guregu/kami"
 	"gopkg.in/gorp.v1"
@@ -89,8 +88,6 @@ func addNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 	} else {
 		note.OwnerID = 0
 	}
-	note.CreatedAt = time.Now().UnixNano()
-	note.UpdatedAt = time.Now().UnixNano()
 
 	if err := db.Insert(note); err != nil {
 		return nil, &ErrorResponse{
@@ -157,7 +154,6 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 	note.Title = newNote.Title
 	note.Content = newNote.Content
 	note.OwnerID = newNote.OwnerID
-	note.UpdatedAt = time.Now().UnixNano()
 
 	if _, err := db.Update(note); err != nil {
 		return nil, &ErrorResponse{

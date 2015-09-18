@@ -24,40 +24,29 @@ func TestListNotesAuth(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
-			1,
-			"testuser",
-			"000000",
-			"test@emaple.com",
-			1442284669000,
-			1442284669000,
+			ID: 1,
+			Username: "testuser",
+			PasswordHash: "000000",
+			Email: "test@emaple.com",
 		},
 		&model.Session{},
 	})
 
 	dbMap.Insert(&model.Note{
-		ID:         0,
 		Title:      "Test Title 1",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    1,
 		ShareState: model.ShareStatePrivate,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		ID:         0,
 		Title:      "Test Title 2",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    2,
 		ShareState: model.ShareStatePrivate,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		ID:         0,
 		Title:      "Test Title 3",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    2,
 		ShareState: model.ShareStatePublic,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	})
 
 	server := httptest.NewServer(http.HandlerFunc(
@@ -86,40 +75,29 @@ func TestGetNoteAuth(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
-			1,
-			"testuser",
-			"000000",
-			"test@emaple.com",
-			1442284669000,
-			1442284669000,
+			ID: 1,
+			Username: "testuser",
+			PasswordHash: "000000",
+			Email: "test@emaple.com",
 		},
 		&model.Session{},
 	})
 
 	dbMap.Insert(&model.Note{
-		ID:         0,
 		Title:      "Test Title 1",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    1,
 		ShareState: model.ShareStatePrivate,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		ID:         0,
 		Title:      "Test Title 2",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    2,
 		ShareState: model.ShareStatePrivate,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		ID:         0,
 		Title:      "Test Title 3",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    2,
 		ShareState: model.ShareStatePublic,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	})
 
 	kami.Reset()
@@ -146,12 +124,10 @@ func TestUpdateNoteAuth(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
-			1,
-			"testuser",
-			"000000",
-			"test@emaple.com",
-			1442284669000,
-			1442284669000,
+			ID: 1,
+			Username: "testuser",
+			PasswordHash: "000000",
+			Email: "test@emaple.com",
 		},
 		&model.Session{},
 	})
@@ -162,24 +138,18 @@ func TestUpdateNoteAuth(t *testing.T) {
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    1,
 		ShareState: model.ShareStatePrivate,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	}, &model.Note{
 		ID:         0,
 		Title:      "Test Title 2",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    2,
 		ShareState: model.ShareStatePrivate,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	}, &model.Note{
 		ID:         0,
 		Title:      "Test Title 3",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    2,
 		ShareState: model.ShareStatePublic,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	})
 
 	kami.Reset()
@@ -199,7 +169,6 @@ func TestUpdateNoteAuth(t *testing.T) {
 	assert.Equal("Test Title 2", note["title"])
 	assert.Equal("hoge piyo hoge piyo.", note["content"])
 	assert.EqualValues(1, note["ownerId"])
-	assert.EqualValues(1442284669000, note["createdAt"])
 
 	request(t, server.URL+"/api/notes/2", http.StatusUnauthorized, map[string]interface{}{
 		"title":   "Test Title 2",
@@ -223,40 +192,29 @@ func TestDeleteNoteAuth(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
-			1,
-			"testuser",
-			"000000",
-			"test@emaple.com",
-			1442284669000,
-			1442284669000,
+			ID: 1,
+			Username: "testuser",
+			PasswordHash: "000000",
+			Email: "test@emaple.com",
 		},
 		&model.Session{},
 	})
 
 	dbMap.Insert(&model.Note{
-		ID:         0,
 		Title:      "Test Title 1",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    1,
 		ShareState: model.ShareStatePrivate,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		ID:         0,
 		Title:      "Test Title 2",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    2,
 		ShareState: model.ShareStatePrivate,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	}, &model.Note{
-		ID:         0,
 		Title:      "Test Title 3",
 		Content:    "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:    2,
 		ShareState: model.ShareStatePublic,
-		CreatedAt:  1442284669000,
-		UpdatedAt:  1442284669000,
 	})
 
 	kami.Reset()

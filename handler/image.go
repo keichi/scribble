@@ -5,7 +5,6 @@ import (
 	"golang.org/x/net/context"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/goamz/goamz/s3"
 	"github.com/guregu/kami"
@@ -44,8 +43,6 @@ func AddImage(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		UUID:        uuid.NewV4().String(),
 		NoteID:      int64(noteID),
 		Note:        note,
-		CreatedAt:   time.Now().UnixNano(),
-		UpdatedAt:   time.Now().UnixNano(),
 	}
 
 	if !image.Authorize(auth.User, model.ActionCreate) {

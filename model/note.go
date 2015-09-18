@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"gopkg.in/gorp.v1"
 )
 
@@ -42,6 +44,7 @@ func (note *Note) Authorize(user *User, action AuthorizedAction) bool {
 	return false
 }
 
+// PostGet is fired after the entity is acquired from the database
 func (note *Note) PostGet(s gorp.SqlExecutor) error {
 	var images []Image
 	_, err := s.Select(&images, "select * from images where note_id = ?", note.ID)
@@ -50,5 +53,18 @@ func (note *Note) PostGet(s gorp.SqlExecutor) error {
 	}
 
 	note.Images = images
+	return nil
+}
+
+// PreInsert is fired before the entity is being inserted
+func (note *Note) PreInsert(s gorp.SqlExecutor) error {
+	note.CreatedAt = time.Now().UnixNano()
+	note.UpdatedAt = note.CreatedAt
+	return nil
+}
+
+// PreUpdate is fired before the entity is being updated
+func (note *Note) PreUpdate(s gorp.SqlExecutor) error {
+	note.UpdatedAt = time.Now().UnixNano()
 	return nil
 }

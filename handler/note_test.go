@@ -160,8 +160,6 @@ func TestGetNote(t *testing.T) {
 		Title:     "Test Title 1",
 		Content:   "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:   0,
-		CreatedAt: 1442284669000,
-		UpdatedAt: 1442292926000,
 	})
 
 	kami.Reset()
@@ -179,8 +177,6 @@ func TestGetNote(t *testing.T) {
 	assert.Equal("Test Title 1", note["title"])
 	assert.Equal("lorem ipsum dolor sit amet consetetur.", note["content"])
 	assert.EqualValues(0, note["ownerId"])
-	assert.EqualValues(1442284669000, note["createdAt"])
-	assert.EqualValues(1442292926000, note["updatedAt"])
 }
 
 func TestUpdateNote(t *testing.T) {
@@ -197,8 +193,6 @@ func TestUpdateNote(t *testing.T) {
 		Title:     "Test Title 1",
 		Content:   "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:   0,
-		CreatedAt: 1442284669000,
-		UpdatedAt: 1442292926000,
 	})
 
 	kami.Reset()
@@ -220,7 +214,6 @@ func TestUpdateNote(t *testing.T) {
 	assert.Equal("Test Title 2", note["title"])
 	assert.Equal("hoge piyo hoge piyo.", note["content"])
 	assert.EqualValues(1, note["ownerId"])
-	assert.EqualValues(1442284669000, note["createdAt"])
 
 	count, err := dbMap.SelectInt("SELECT COUNT(id) FROM notes")
 	assert.Nil(err)
@@ -232,7 +225,6 @@ func TestUpdateNote(t *testing.T) {
 	assert.Equal("Test Title 2", n.Title)
 	assert.Equal("hoge piyo hoge piyo.", n.Content)
 	assert.EqualValues(1, n.OwnerID)
-	assert.EqualValues(1442284669000, n.CreatedAt)
 }
 
 func TestDeleteNote(t *testing.T) {
@@ -249,8 +241,6 @@ func TestDeleteNote(t *testing.T) {
 		Title:     "Test Title 1",
 		Content:   "lorem ipsum dolor sit amet consetetur.",
 		OwnerID:   0,
-		CreatedAt: 1442284669000,
-		UpdatedAt: 1442292926000,
 	})
 
 	count, err := dbMap.SelectInt("SELECT COUNT(id) FROM notes")

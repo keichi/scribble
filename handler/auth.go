@@ -3,7 +3,6 @@ package handler
 import (
 	"golang.org/x/net/context"
 	"net/http"
-	"time"
 
 	"gopkg.in/gorp.v1"
 
@@ -38,12 +37,9 @@ func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 	}
 
 	user := model.User{
-		0,
-		input.Username,
-		auth.HashPassword(input.Username, input.Password),
-		input.Email,
-		time.Now().UnixNano(),
-		time.Now().UnixNano(),
+		Username: input.Username,
+		PasswordHash: auth.HashPassword(input.Username, input.Password),
+		Email: input.Email,
 	}
 
 	if err := dbMap.Insert(&user); err != nil {
@@ -88,11 +84,8 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	}
 
 	session := model.Session{
-		0,
-		auth.NewToken(),
-		user.ID,
-		time.Now().UnixNano(),
-		time.Now().UnixNano(),
+		Token: auth.NewToken(),
+		UserID: user.ID,
 	}
 
 	if err := dbMap.Insert(&session); err != nil {
