@@ -53,7 +53,7 @@ func WrapJSONHandler(v interface{}, h JSONHandler) kami.HandlerFunc {
 			if err := decoder.Decode(input); err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				encoder.Encode(map[string]string{
-					"message": fmt.Sprintf("json decode fail: %v", err),
+					"message": fmt.Sprintf("JSON decode fail: %v", err),
 				})
 				return
 			}
@@ -75,7 +75,7 @@ func WrapJSONHandler(v interface{}, h JSONHandler) kami.HandlerFunc {
 		if err := encoder.Encode(output); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			encoder.Encode(map[string]string{
-				"message": fmt.Sprintf("json encode fail: %v", err),
+				"message": fmt.Sprintf("JSON encode fail: %v", err),
 			})
 			return
 		}
