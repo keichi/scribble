@@ -20,7 +20,16 @@ CREATE TABLE notes (
   title VARCHAR(256),
   content TEXT,
   owner_id INT64,
-  share_state INT8
+  share_state INT8,
+  created_at INT64,
+  updated_at INT64
+);
+
+CREATE TABLE images (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  content_type VARCHAR(256),
+  uuid VARCHAR(36),
+  note_id INT64,
   created_at INT64,
   updated_at INT64
 );
