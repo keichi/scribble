@@ -9,6 +9,7 @@ import (
 	"github.com/guregu/kami"
 	"gopkg.in/gorp.v1"
 
+	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/handler"
 )
 
@@ -82,6 +83,21 @@ func CheckIfImageExists(ctx context.Context, w http.ResponseWriter, r *http.Requ
 		resp := &handler.ErrorResponse{
 			http.StatusBadRequest,
 			fmt.Sprintf("Query failed: %v", err),
+		}
+		resp.Render(w)
+		return nil
+	}
+
+	return ctx
+}
+
+// CheckIfNoteExists middleware checks if user is logged in
+func CheckIfLoggedIn(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
+	auth := ctx.Value("auth").(*auth.Context)
+	if !auth.IsLoggedIn {
+		resp := &handler.ErrorResponse{
+			http.StatusUnauthorized,
+			fmt.Sprintf("You have to logged in to execute this request"),
 		}
 		resp.Render(w)
 		return nil

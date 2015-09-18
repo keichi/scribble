@@ -101,5 +101,13 @@ func main() {
 	kami.Get("/api/notes/:noteId/images/:imageId", handler.GetImage)
 	kami.Delete("/api/notes/:noteId/images/:imageId", handler.DeleteImage)
 
+	// Personal APIs
+	kami.Use("/api/my/", middleware.CheckIfLoggedIn)
+	kami.Get("/api/my/notes", handler.ListMyNotes)
+	kami.Post("/api/my/notes", handler.AddNote)
+	kami.Get("/api/my/notes/:noteId", handler.GetNote)
+	kami.Put("/api/my/notes/:noteId", handler.UpdateNote)
+	kami.Delete("/api/my/notes/:noteId", handler.DeleteNote)
+
 	kami.Serve()
 }
