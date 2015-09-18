@@ -16,7 +16,7 @@ import (
 // It also ensures the note id is a valid integer
 func CheckIfNoteExists(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
 	db := ctx.Value("db").(*gorp.DbMap)
-	noteID, err := strconv.Atoi(kami.Param(ctx, "noteId"))
+	noteID, err := strconv.ParseInt(kami.Param(ctx, "noteId"), 10, 64)
 
 	if err != nil {
 		resp := &handler.ErrorResponse{
@@ -56,8 +56,8 @@ func CheckIfImageExists(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	}
 
 	db := ctx.Value("db").(*gorp.DbMap)
-	noteID, _ := strconv.Atoi(kami.Param(ctx, "noteId"))
-	imageID, err := strconv.Atoi(kami.Param(ctx, "imageId"))
+	noteID, _ := strconv.ParseInt(kami.Param(ctx, "noteId"), 10, 64)
+	imageID, err := strconv.ParseInt(kami.Param(ctx, "imageId"), 10, 64)
 
 	if err != nil {
 		resp := &handler.ErrorResponse{

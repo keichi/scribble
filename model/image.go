@@ -5,9 +5,8 @@ type Image struct {
 	ID          int64      `db:"id" json"id,omitempty"`
 	ContentType string     `db:"content_type" json:"contentType"`
 	UUID        string     `db:"uuid" json:"uuid"`
-	OwnerID     int64      `db:"owner_id" json:"ownerId"`
-	NoteID      int64      `db:"note_id" json:"noteId"`
-	ShareState  ShareState `db:"share_state" json:"share_state"`
+	NoteID      int64      `db:"note_id" json:"noteId,omitempty"`
+	Note        *Note      `db:"-" json:"-"`
 	CreatedAt   int64      `db:"created_at" json:"createdAt,omitempty"`
 	UpdatedAt   int64      `db:"updated_at" json:"updatedAt,omitempty"`
 }
@@ -16,13 +15,13 @@ type Image struct {
 func (image *Image) Authorize(user *User, action AuthorizedAction) bool {
 	switch action {
 	case ActionCreate:
-		return true
+		return image.Note.OwnerID == user.ID
 	case ActionRead:
-		return image.ShareState == ShareStatePublic || image.OwnerID == user.ID
+		return image.Note.ShareState == ShareStatePublic || image.Note.OwnerID == user.ID
 	case ActionUpdate:
-		return image.OwnerID == user.ID
+		return image.Note.OwnerID == user.ID
 	case ActionDelete:
-		return image.OwnerID == user.ID
+		return image.Note.OwnerID == user.ID
 	}
 
 	return false

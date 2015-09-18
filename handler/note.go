@@ -108,7 +108,7 @@ var AddNote = WrapJSONHandler(model.Note{}, addNote)
 func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
 	auth := ctx.Value("auth").(*auth.Context)
-	noteID, _ := strconv.Atoi(kami.Param(ctx, "noteId"))
+	noteID, _ := strconv.ParseInt(kami.Param(ctx, "noteId"), 10, 64)
 
 	note := new(model.Note)
 	err := db.SelectOne(note, "select * from notes where id = ?", noteID)
@@ -136,7 +136,7 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 	db := ctx.Value("db").(*gorp.DbMap)
 	auth := ctx.Value("auth").(*auth.Context)
 	newNote := req.(*model.Note)
-	noteID, _ := strconv.Atoi(kami.Param(ctx, "noteId"))
+	noteID, _ := strconv.ParseInt(kami.Param(ctx, "noteId"), 10, 64)
 
 	note := new(model.Note)
 	err := db.SelectOne(note, "select * from notes where id = ?", noteID)
@@ -175,7 +175,7 @@ var UpdateNote = WrapJSONHandler(model.Note{}, updateNote)
 func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
 	auth := ctx.Value("auth").(*auth.Context)
-	noteID, _ := strconv.Atoi(kami.Param(ctx, "noteId"))
+	noteID, _ := strconv.ParseInt(kami.Param(ctx, "noteId"), 10, 64)
 
 	note := new(model.Note)
 	err := db.SelectOne(note, "select * from notes where id = ?", noteID)
