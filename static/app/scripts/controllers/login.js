@@ -2,11 +2,11 @@
 
 /**
  * @ngdoc function
- * @name scribbleApp.controller:MainCtrl
+ * @name scribbleApp.controller:LoginCtrl
  * @description
- * # MainCtrl
+ * # LoginCtrl
  * Controller of the scribbleApp
  */
 angular.module('scribbleApp')
-  .controller('MainCtrl', function () {
+  .controller('LoginCtrl', function () {
   });
