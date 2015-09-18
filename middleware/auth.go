@@ -38,6 +38,7 @@ func Auth(ctx context.Context, w http.ResponseWriter, r *http.Request) context.C
 	}
 
 	if session.ExpiresAt >= time.Now().UnixNano() {
+		dbMap.Delete(&session)
 		resp := &handler.ErrorResponse{
 			http.StatusBadRequest,
 			"Session has expired",

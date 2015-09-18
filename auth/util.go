@@ -3,7 +3,7 @@ package auth
 import (
 	"crypto/rand"
 	"crypto/sha256"
-	"fmt"
+	"encoding/base64"
 )
 
 // TODO Read these values from environment variables
@@ -24,7 +24,7 @@ func HashPassword(email string, password string) string {
 		hash = sha256.Sum256(next)
 	}
 
-	return fmt.Sprintf("%x", hash)
+	return base64.StdEncoding.EncodeToString(hash[:])
 }
 
 // NewToken creates 32byte token using CSPRNG algorithm
@@ -32,5 +32,5 @@ func NewToken() string {
 	randBytes := make([]byte, 16)
 	rand.Read(randBytes)
 
-	return fmt.Sprintf("%x", randBytes)
+	return base64.StdEncoding.EncodeToString(randBytes)
 }

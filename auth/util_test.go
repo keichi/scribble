@@ -2,6 +2,7 @@ package auth
 
 import (
 	"testing"
+	"encoding/base64"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -11,7 +12,9 @@ func TestNewToken(t *testing.T) {
 
 	token1 := NewToken()
 	assert.NotEmpty(token1)
-	assert.EqualValues(32, len(token1))
+
+	raw, _ := base64.StdEncoding.DecodeString(token1)
+	assert.EqualValues(16, len(raw))
 
 	token2 := NewToken()
 
