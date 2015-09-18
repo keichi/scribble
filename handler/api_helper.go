@@ -2,11 +2,11 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"golang.org/x/net/context"
 	"net/http"
 	"reflect"
 
-	"fmt"
 	"github.com/guregu/kami"
 )
 
@@ -36,8 +36,8 @@ func (err *ErrorResponse) Render(w http.ResponseWriter) {
 
 type emptyRequest struct{}
 
-// WrapJSONHandler wraps JsonHandler as a kami.HandlerFunc
-func WrapJSONHandler(v interface{}, h JSONHandler) kami.HandlerFunc {
+// wrapJSONHandler wraps JsonHandler as a kami.HandlerFunc
+func wrapJSONHandler(v interface{}, h JSONHandler) kami.HandlerFunc {
 	t := reflect.TypeOf(v)
 
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,7 @@ func WrapJSONHandler(v interface{}, h JSONHandler) kami.HandlerFunc {
 		defer r.Body.Close()
 
 		var input interface{}
-		if t != reflect.TypeOf(nil) {
+		if t != reflect.TypeOf(emptyRequest{}) {
 			input = reflect.New(t).Interface()
 			if err := decoder.Decode(input); err != nil {
 				w.WriteHeader(http.StatusBadRequest)

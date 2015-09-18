@@ -128,7 +128,7 @@ func getImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 }
 
 // GetImage handles get image requests
-var GetImage = WrapJSONHandler(nil, getImage)
+var GetImage = wrapJSONHandler(emptyRequest{}, getImage)
 
 func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
@@ -174,4 +174,4 @@ func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 }
 
 // DeleteImage handles delete image requests
-var DeleteImage = WrapJSONHandler(nil, deleteImage)
+var DeleteImage = wrapJSONHandler(emptyRequest{}, deleteImage)

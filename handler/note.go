@@ -69,7 +69,7 @@ func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorRespons
 }
 
 // ListNotes handles list notes requests
-var ListNotes = WrapJSONHandler(nil, listNotes)
+var ListNotes = wrapJSONHandler(emptyRequest{}, listNotes)
 
 func addNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
@@ -96,7 +96,7 @@ func addNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 }
 
 // AddNote handles add note requests
-var AddNote = WrapJSONHandler(model.Note{}, addNote)
+var AddNote = wrapJSONHandler(model.Note{}, addNote)
 
 func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
@@ -123,7 +123,7 @@ func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 }
 
 // GetNote handles get note requests
-var GetNote = WrapJSONHandler(nil, getNote)
+var GetNote = wrapJSONHandler(emptyRequest{}, getNote)
 
 func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
@@ -162,7 +162,7 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 }
 
 // UpdateNote handles update note requests
-var UpdateNote = WrapJSONHandler(model.Note{}, updateNote)
+var UpdateNote = wrapJSONHandler(model.Note{}, updateNote)
 
 func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
@@ -196,4 +196,4 @@ func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 }
 
 // DeleteNote handles delete note requests
-var DeleteNote = WrapJSONHandler(nil, deleteNote)
+var DeleteNote = wrapJSONHandler(emptyRequest{}, deleteNote)

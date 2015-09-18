@@ -50,7 +50,7 @@ func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 }
 
 // Register handles user registration requests
-var Register = WrapJSONHandler(registerRequest{}, register)
+var Register = wrapJSONHandler(registerRequest{}, register)
 
 type loginRequest struct {
 	Username string `json:"username"`
@@ -96,7 +96,7 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 }
 
 // Login handles user login requests
-var Login = WrapJSONHandler(loginRequest{}, login)
+var Login = wrapJSONHandler(loginRequest{}, login)
 
 func logout(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	dbMap := ctx.Value("db").(*gorp.DbMap)
@@ -115,4 +115,4 @@ func logout(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) 
 }
 
 // Logout handles user logout requests
-var Logout = WrapJSONHandler(nil, logout)
+var Logout = wrapJSONHandler(emptyRequest{}, logout)
