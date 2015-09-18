@@ -46,7 +46,7 @@ func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorRespons
 		offset = i
 	}
 
-	var notes []model.Note
+	var notes []*model.Note
 	var err error
 	if auth.IsLoggedIn {
 		_, err = db.Select(&notes, `select * from notes where share_state = ?
