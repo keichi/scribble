@@ -107,9 +107,9 @@ func TestLogin(t *testing.T) {
 	authCtx.IsLoggedIn = false
 
 	user := model.User{
-		Username: "testuser",
+		Username:     "testuser",
 		PasswordHash: auth.HashPassword("testuser", "testpassword"),
-		Email: "test@example.com",
+		Email:        "test@example.com",
 	}
 
 	err := dbMap.Insert(&user)
@@ -163,7 +163,7 @@ func TestLogout(t *testing.T) {
 	const testSessionToken string = "3a11779677f844f581448ba6337225499dae0850c26665a83ae344609157774"
 
 	session := model.Session{
-		Token: testSessionToken,
+		Token:  testSessionToken,
 		UserID: 0,
 	}
 

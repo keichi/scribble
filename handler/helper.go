@@ -13,6 +13,7 @@ import (
 // JSONHandler is a generic type for JSON API handlers
 type JSONHandler func(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 
+// ErrorResponse represents errors returned from APIs
 type ErrorResponse struct {
 	StatusCode int    `json:"-"`
 	Message    string `json:"message"`
@@ -22,6 +23,7 @@ func (err *ErrorResponse) Error() string {
 	return err.Message
 }
 
+// Render writes the content of ErrorResponse as a JSON to a ResponseWriter
 func (err *ErrorResponse) Render(w http.ResponseWriter) {
 	encoder := json.NewEncoder(w)
 

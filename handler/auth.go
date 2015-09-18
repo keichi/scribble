@@ -37,9 +37,9 @@ func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 	}
 
 	user := model.User{
-		Username: input.Username,
+		Username:     input.Username,
 		PasswordHash: auth.HashPassword(input.Username, input.Password),
-		Email: input.Email,
+		Email:        input.Email,
 	}
 
 	if err := dbMap.Insert(&user); err != nil {
@@ -84,7 +84,7 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	}
 
 	session := model.Session{
-		Token: auth.NewToken(),
+		Token:  auth.NewToken(),
 		UserID: user.ID,
 	}
 

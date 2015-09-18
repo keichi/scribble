@@ -20,6 +20,7 @@ const (
 	imageSizeLimit = 3 * 1024 * 1024 * 1024
 )
 
+// AddImage handles add image requests
 func AddImage(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	db := ctx.Value("db").(*gorp.DbMap)
 	auth := ctx.Value("auth").(*auth.Context)
@@ -106,7 +107,6 @@ func getImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 	noteID, _ := strconv.ParseInt(kami.Param(ctx, "noteId"), 10, 64)
 	imageID, _ := strconv.ParseInt(kami.Param(ctx, "imageId"), 10, 64)
 
-
 	image := new(model.Image)
 	err := db.SelectOne(image, `select * from images where id = ?
 								and note_id = ?`, imageID, noteID)
@@ -127,6 +127,7 @@ func getImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 	return image, nil
 }
 
+// GetImage handles get image requests
 var GetImage = WrapJSONHandler(nil, getImage)
 
 func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
@@ -172,4 +173,5 @@ func deleteImage(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 	return nil, nil
 }
 
+// DeleteImage handles delete image requests
 var DeleteImage = WrapJSONHandler(nil, deleteImage)

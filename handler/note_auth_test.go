@@ -24,10 +24,10 @@ func TestListNotesAuth(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
-			ID: 1,
-			Username: "testuser",
+			ID:           1,
+			Username:     "testuser",
 			PasswordHash: "000000",
-			Email: "test@emaple.com",
+			Email:        "test@emaple.com",
 		},
 		&model.Session{},
 	})
@@ -75,10 +75,10 @@ func TestGetNoteAuth(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
-			ID: 1,
-			Username: "testuser",
+			ID:           1,
+			Username:     "testuser",
 			PasswordHash: "000000",
-			Email: "test@emaple.com",
+			Email:        "test@emaple.com",
 		},
 		&model.Session{},
 	})
@@ -124,10 +124,10 @@ func TestUpdateNoteAuth(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
-			ID: 1,
-			Username: "testuser",
+			ID:           1,
+			Username:     "testuser",
 			PasswordHash: "000000",
-			Email: "test@emaple.com",
+			Email:        "test@emaple.com",
 		},
 		&model.Session{},
 	})
@@ -192,10 +192,10 @@ func TestDeleteNoteAuth(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{
 		true,
 		&model.User{
-			ID: 1,
-			Username: "testuser",
+			ID:           1,
+			Username:     "testuser",
 			PasswordHash: "000000",
-			Email: "test@emaple.com",
+			Email:        "test@emaple.com",
 		},
 		&model.Session{},
 	})

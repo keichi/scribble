@@ -156,10 +156,10 @@ func TestGetNote(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
-		ID:        0,
-		Title:     "Test Title 1",
-		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerID:   0,
+		ID:      0,
+		Title:   "Test Title 1",
+		Content: "lorem ipsum dolor sit amet consetetur.",
+		OwnerID: 0,
 	})
 
 	kami.Reset()
@@ -189,10 +189,10 @@ func TestUpdateNote(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
-		ID:        0,
-		Title:     "Test Title 1",
-		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerID:   0,
+		ID:      0,
+		Title:   "Test Title 1",
+		Content: "lorem ipsum dolor sit amet consetetur.",
+		OwnerID: 0,
 	})
 
 	kami.Reset()
@@ -237,10 +237,10 @@ func TestDeleteNote(t *testing.T) {
 	ctx = context.WithValue(ctx, "auth", &auth.Context{User: &model.User{}})
 
 	dbMap.Insert(&model.Note{
-		ID:        0,
-		Title:     "Test Title 1",
-		Content:   "lorem ipsum dolor sit amet consetetur.",
-		OwnerID:   0,
+		ID:      0,
+		Title:   "Test Title 1",
+		Content: "lorem ipsum dolor sit amet consetetur.",
+		OwnerID: 0,
 	})
 
 	count, err := dbMap.SelectInt("SELECT COUNT(id) FROM notes")
