@@ -13,7 +13,6 @@ import (
 	"github.com/keichi/scribble/model"
 )
 
-
 func listMyNotes(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
 	auth := ctx.Value("auth").(*auth.Context)
@@ -49,7 +48,7 @@ func listMyNotes(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 	var notes []model.Note
 	_, err := db.Select(&notes, `select * from notes where
 									owner_id = ? limit ? offset ?`,
-						auth.User.ID, limit, offset)
+		auth.User.ID, limit, offset)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusInternalServerError,

@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/goamz/goamz/aws"
@@ -108,6 +109,12 @@ func main() {
 	kami.Get("/api/my/notes/:noteId", handler.GetNote)
 	kami.Put("/api/my/notes/:noteId", handler.UpdateNote)
 	kami.Delete("/api/my/notes/:noteId", handler.DeleteNote)
+
+	// Static file server
+	kami.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "static/index.html")
+	})
+	kami.Get("/static/*path", http.StripPrefix("/static", http.FileServer(http.Dir("static"))))
 
 	kami.Serve()
 }

@@ -1,6 +1,5 @@
 package handler
 
-
 import (
 	"fmt"
 	"net/http"
@@ -24,7 +23,7 @@ func TestPanic(t *testing.T) {
 	server := httptest.NewServer(kami.Handler())
 	defer server.Close()
 
-	resp := request(t, server.URL + "/panic", http.StatusInternalServerError, nil)
+	resp := request(t, server.URL+"/panic", http.StatusInternalServerError, nil)
 	assert.NotNil(resp)
 	assert.Equal("Handler panic: This is a test panic", resp.(map[string]interface{})["message"])
 	assert.NotEmpty(resp.(map[string]interface{})["context"])
