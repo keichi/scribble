@@ -4,12 +4,6 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
-	"net/http"
-
-	"golang.org/x/net/context"
-	"gopkg.in/gorp.v1"
-
-	"github.com/keichi/scribble/model"
 )
 
 // TODO Read these values from environment variables
@@ -39,31 +33,4 @@ func NewToken() string {
 	rand.Read(randBytes)
 
 	return fmt.Sprintf("%x", randBytes)
-}
-
-// AuthMiddleWare acquires current login state and user info using the
-// session token stored in request header
-func Middleware(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
-	dbMap := ctx.Value("db").(*gorp.DbMap)
-	token := r.Header.Get("X-Scribble-Session")
-
-	if token == "" {
-		authCtx := &Context{false, &model.User{}, &model.Session{}}
-		return context.WithValue(ctx, "auth", authCtx)
-	}
-
-	var session model.Session
-	if err := dbMap.SelectOne(&session, "select * from sessions where token = ?", token); err != nil {
-		authCtx := &Context{false, &model.User{}, &model.Session{}}
-		return context.WithValue(ctx, "auth", authCtx)
-	}
-
-	var user model.User
-	if err := dbMap.SelectOne(&user, "select * from users where id = ?", session.UserID); err != nil {
-		authCtx := &Context{false, &model.User{}, &model.Session{}}
-		return context.WithValue(ctx, "auth", authCtx)
-	}
-
-	authCtx := &Context{true, &user, &session}
-	return context.WithValue(ctx, "auth", authCtx)
 }

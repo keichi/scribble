@@ -12,8 +12,8 @@ import (
 	"golang.org/x/net/context"
 	"gopkg.in/gorp.v1"
 
-	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/handler"
+	"github.com/keichi/scribble/middleware"
 	"github.com/keichi/scribble/model"
 )
 
@@ -63,7 +63,7 @@ func main() {
 	kami.PanicHandler = handler.Panic
 
 	// Middlwares
-	kami.Use("/api/", auth.Middleware)
+	kami.Use("/api/", middleware.Auth)
 
 	// Authentication APIs
 	kami.Post("/api/register", handler.Register)
