@@ -64,6 +64,7 @@ func main() {
 
 	// Middlwares
 	kami.Use("/api/", middleware.Auth)
+	kami.Use("/api/notes/:noteId", middleware.CheckIfNoteExists)
 
 	// Authentication APIs
 	kami.Post("/api/register", handler.Register)

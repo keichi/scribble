@@ -170,6 +170,8 @@ func TestGetNote(t *testing.T) {
 	server := httptest.NewServer(kami.Handler())
 	defer server.Close()
 
+	request(t, server.URL+"/api/notes/123", http.StatusBadRequest, nil)
+
 	resp := request(t, server.URL+"/api/notes/1", http.StatusOK, nil)
 	assert.NotNil(resp)
 
@@ -204,6 +206,8 @@ func TestUpdateNote(t *testing.T) {
 	kami.Post("/api/notes/:noteId", UpdateNote)
 	server := httptest.NewServer(kami.Handler())
 	defer server.Close()
+
+	request(t, server.URL+"/api/notes/123", http.StatusBadRequest, nil)
 
 	resp := request(t, server.URL+"/api/notes/1", http.StatusOK, map[string]interface{}{
 		"title":   "Test Title 2",

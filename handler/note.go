@@ -108,17 +108,10 @@ var AddNote = WrapJSONHandler(model.Note{}, addNote)
 func getNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
 	auth := ctx.Value("auth").(*auth.Context)
-	noteID, err := strconv.Atoi(kami.Param(ctx, "noteId"))
-
-	if err != nil {
-		return nil, &ErrorResponse{
-			http.StatusBadRequest,
-			fmt.Sprintf("Invalid note id format: %v", err),
-		}
-	}
+	noteID, _ := strconv.Atoi(kami.Param(ctx, "noteId"))
 
 	note := new(model.Note)
-	err = db.SelectOne(note, "select * from notes where id = ?", noteID)
+	err := db.SelectOne(note, "select * from notes where id = ?", noteID)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
@@ -143,17 +136,10 @@ func updateNote(ctx context.Context, req interface{}) (interface{}, *ErrorRespon
 	db := ctx.Value("db").(*gorp.DbMap)
 	auth := ctx.Value("auth").(*auth.Context)
 	newNote := req.(*model.Note)
-	noteID, err := strconv.Atoi(kami.Param(ctx, "noteId"))
-
-	if err != nil {
-		return nil, &ErrorResponse{
-			http.StatusBadRequest,
-			fmt.Sprintf("Invalid note id format: %v", err),
-		}
-	}
+	noteID, _ := strconv.Atoi(kami.Param(ctx, "noteId"))
 
 	note := new(model.Note)
-	err = db.SelectOne(note, "select * from notes where id = ?", noteID)
+	err := db.SelectOne(note, "select * from notes where id = ?", noteID)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
@@ -189,17 +175,10 @@ var UpdateNote = WrapJSONHandler(model.Note{}, updateNote)
 func deleteNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	db := ctx.Value("db").(*gorp.DbMap)
 	auth := ctx.Value("auth").(*auth.Context)
-	noteID, err := strconv.Atoi(kami.Param(ctx, "noteId"))
-
-	if err != nil {
-		return nil, &ErrorResponse{
-			http.StatusBadRequest,
-			fmt.Sprintf("Invalid note id format: %v", err),
-		}
-	}
+	noteID, _ := strconv.Atoi(kami.Param(ctx, "noteId"))
 
 	note := new(model.Note)
-	err = db.SelectOne(note, "select * from notes where id = ?", noteID)
+	err := db.SelectOne(note, "select * from notes where id = ?", noteID)
 	if err != nil {
 		return nil, &ErrorResponse{
 			http.StatusBadRequest,
