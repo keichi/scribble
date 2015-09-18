@@ -29,7 +29,7 @@ func HashPassword(username string, password string) string {
 
 // NewToken creates 32byte token using CSPRNG algorithm
 func NewToken() string {
-	randBytes := make([]byte, 32)
+	randBytes := make([]byte, 16)
 	rand.Read(randBytes)
 
 	return fmt.Sprintf("%x", randBytes)
