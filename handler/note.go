@@ -83,11 +83,7 @@ func addNote(ctx context.Context, req interface{}) (interface{}, *ErrorResponse)
 		}
 	}
 
-	if auth.IsLoggedIn {
-		note.OwnerID = auth.User.ID
-	} else {
-		note.OwnerID = 0
-	}
+	note.OwnerID = auth.User.ID
 
 	if err := db.Insert(note); err != nil {
 		return nil, &ErrorResponse{
