@@ -11,24 +11,23 @@ import (
 )
 
 type registerRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
 	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	input := req.(*registerRequest)
 	dbMap := ctx.Value("db").(*gorp.DbMap)
 
-	if input.Username == "" {
-		return nil, &ErrorResponse{http.StatusBadRequest, "username is empty"}
+	if input.Email == "" {
+		return nil, &ErrorResponse{http.StatusBadRequest, "email is empty"}
 	}
 
 	if input.Password == "" {
 		return nil, &ErrorResponse{http.StatusBadRequest, "password is empty"}
 	}
 
-	count, err := dbMap.SelectInt("select count(id) from users where username = ?", input.Username)
+	count, err := dbMap.SelectInt("select count(id) from users where email = ?", input.Email)
 	if err != nil {
 		return nil, &ErrorResponse{http.StatusInternalServerError, err.Error()}
 	}
@@ -37,9 +36,8 @@ func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 	}
 
 	user := model.User{
-		Username:     input.Username,
-		PasswordHash: auth.HashPassword(input.Username, input.Password),
-		Email:        input.Email,
+		Email:     input.Email,
+		PasswordHash: auth.HashPassword(input.Email, input.Password),
 	}
 
 	if err := dbMap.Insert(&user); err != nil {
@@ -53,7 +51,7 @@ func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 var Register = wrapJSONHandler(registerRequest{}, register)
 
 type loginRequest struct {
-	Username string `json:"username"`
+	Email string `json:"email"`
 	Password string `json:"password"`
 }
 
@@ -66,8 +64,8 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 		return nil, &ErrorResponse{http.StatusBadRequest, "already logged in"}
 	}
 
-	if input.Username == "" {
-		return nil, &ErrorResponse{http.StatusBadRequest, "username is empty"}
+	if input.Email == "" {
+		return nil, &ErrorResponse{http.StatusBadRequest, "email is empty"}
 	}
 
 	if input.Password == "" {
@@ -76,11 +74,11 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 
 	var user model.User
 
-	passwordHash := auth.HashPassword(input.Username, input.Password)
+	passwordHash := auth.HashPassword(input.Email, input.Password)
 
-	err := dbMap.SelectOne(&user, "select * from users where username = ? and password_hash = ?", input.Username, passwordHash)
+	err := dbMap.SelectOne(&user, "select * from users where email = ? and password_hash = ?", input.Email, passwordHash)
 	if err != nil {
-		return nil, &ErrorResponse{http.StatusBadRequest, "username or password is wrong"}
+		return nil, &ErrorResponse{http.StatusBadRequest, "email or password is wrong"}
 	}
 
 	session := model.Session{

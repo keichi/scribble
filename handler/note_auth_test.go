@@ -25,9 +25,8 @@ func TestListNotesAuth(t *testing.T) {
 		true,
 		&model.User{
 			ID:           1,
-			Username:     "testuser",
-			PasswordHash: "000000",
 			Email:        "test@emaple.com",
+			PasswordHash: "000000",
 		},
 		&model.Session{},
 	})
@@ -76,9 +75,8 @@ func TestGetNoteAuth(t *testing.T) {
 		true,
 		&model.User{
 			ID:           1,
-			Username:     "testuser",
-			PasswordHash: "000000",
 			Email:        "test@emaple.com",
+			PasswordHash: "000000",
 		},
 		&model.Session{},
 	})
@@ -125,9 +123,8 @@ func TestUpdateNoteAuth(t *testing.T) {
 		true,
 		&model.User{
 			ID:           1,
-			Username:     "testuser",
-			PasswordHash: "000000",
 			Email:        "test@emaple.com",
+			PasswordHash: "000000",
 		},
 		&model.Session{},
 	})
@@ -193,9 +190,8 @@ func TestDeleteNoteAuth(t *testing.T) {
 		true,
 		&model.User{
 			ID:           1,
-			Username:     "testuser",
-			PasswordHash: "000000",
 			Email:        "test@emaple.com",
+			PasswordHash: "000000",
 		},
 		&model.Session{},
 	})

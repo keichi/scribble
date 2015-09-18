@@ -11,9 +11,9 @@ const strechCount int = 1000
 const fixedSalt string = "kRAKG5PRXZryyrPnMAXwCfGYHFfxi"
 
 // HashPassword generates SHA256 hash of the password with salt & stretching
-func HashPassword(username string, password string) string {
+func HashPassword(email string, password string) string {
 	pwd := []byte(password)
-	salt := []byte(username + fixedSalt)
+	salt := []byte(email + fixedSalt)
 	hash := [32]byte{}
 
 	for i := 0; i < strechCount; i++ {

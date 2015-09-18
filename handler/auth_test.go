@@ -32,7 +32,7 @@ func TestRegister(t *testing.T) {
 
 	resp := request(t, server.URL, http.StatusOK,
 		map[string]string{
-			"username": "testuser",
+			"email": "test@example.com",
 			"password": "testpassword",
 		},
 	)
@@ -40,15 +40,15 @@ func TestRegister(t *testing.T) {
 
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"username": "",
+			"email": "",
 			"password": "testpassword",
 		},
 	)
-	assert.Equal(map[string]interface{}{"message": "username is empty"}, resp)
+	assert.Equal(map[string]interface{}{"message": "email is empty"}, resp)
 
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"username": "testuser",
+			"email": "test@example.com",
 			"password": "",
 		},
 	)
@@ -82,15 +82,15 @@ func TestLogin(t *testing.T) {
 
 	resp := request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"username": "",
+			"email": "",
 			"password": "testpassword",
 		},
 	)
-	assert.Equal(map[string]interface{}{"message": "username is empty"}, resp)
+	assert.Equal(map[string]interface{}{"message": "email is empty"}, resp)
 
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"username": "testuser",
+			"email": "test@example.com",
 			"password": "",
 		},
 	)
@@ -99,7 +99,7 @@ func TestLogin(t *testing.T) {
 	authCtx.IsLoggedIn = true
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"username": "testuser",
+			"email": "test@example.com",
 			"password": "testpassword",
 		},
 	)
@@ -107,9 +107,8 @@ func TestLogin(t *testing.T) {
 	authCtx.IsLoggedIn = false
 
 	user := model.User{
-		Username:     "testuser",
-		PasswordHash: auth.HashPassword("testuser", "testpassword"),
 		Email:        "test@example.com",
+		PasswordHash: auth.HashPassword("test@example.com", "testpassword"),
 	}
 
 	err := dbMap.Insert(&user)
@@ -117,15 +116,15 @@ func TestLogin(t *testing.T) {
 
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"username": "test",
+			"email": "test@exmaple.com",
 			"password": "test",
 		},
 	)
-	assert.Equal(map[string]interface{}{"message": "username or password is wrong"}, resp)
+	assert.Equal(map[string]interface{}{"message": "email or password is wrong"}, resp)
 
 	resp = request(t, server.URL, http.StatusOK,
 		map[string]string{
-			"username": "testuser",
+			"email": "test@example.com",
 			"password": "testpassword",
 		},
 	)

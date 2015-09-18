@@ -86,9 +86,9 @@ func main() {
 	kami.Use("/api/notes/:noteId/images/:imageId", middleware.CheckIfImageExists)
 
 	// Authentication APIs
-	kami.Post("/api/register", handler.Register)
-	kami.Post("/api/login", handler.Login)
-	kami.Post("/api/logout", handler.Logout)
+	kami.Post("/api/auth/register", handler.Register)
+	kami.Post("/api/auth/login", handler.Login)
+	kami.Post("/api/auth/logout", handler.Logout)
 
 	// Note APIs
 	kami.Get("/api/notes", handler.ListNotes)
