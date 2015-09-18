@@ -16,6 +16,16 @@ type User struct {
 	UpdatedAt    int64  `db:"updated_at" json:"updatedAt,omitempty"`
 }
 
+// PreDelete is fired before user is deleted and deletes associated notes
+func (user *User) PreDelete(s gorp.SqlExecutor) error {
+	_, err := s.Exec("delete from notes where owner_id = ?", user.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // PreInsert is fired before the entity is being inserted
 func (user *User) PreInsert(s gorp.SqlExecutor) error {
 	user.CreatedAt = time.Now().UnixNano()

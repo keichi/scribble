@@ -44,6 +44,16 @@ func (note *Note) Authorize(user *User, action AuthorizedAction) bool {
 	return false
 }
 
+// PreDelete is fired before note is deleted and deletes associated images
+func (note *Note) PreDelete(s gorp.SqlExecutor) error {
+	_, err := s.Exec("delete from images where note_id = ?", note.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // PostGet is fired after the entity is acquired from the database
 func (note *Note) PostGet(s gorp.SqlExecutor) error {
 	var images []Image
