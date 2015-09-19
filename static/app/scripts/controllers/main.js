@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc function
@@ -7,6 +7,6 @@
  * # MainCtrl
  * Controller of the scribbleApp
  */
-angular.module('scribbleApp')
-  .controller('MainCtrl', function () {
+angular.module("scribbleApp")
+  .controller("MainCtrl", function () {
   });

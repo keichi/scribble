@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc overview
@@ -9,49 +9,30 @@
  * Main module of the application.
  */
 angular
-  .module('scribbleApp', [
-    'ngAnimate',
-    'ngResource',
-    'ngRoute',
-    'ngSanitize',
-    'ipCookie',
-    'ng-token-auth'
+  .module("scribbleApp", [
+    "ngAnimate",
+    "ngResource",
+    "ngRoute",
+    "ngSanitize",
+    "ipCookie",
+    "ui.router"
   ])
-  .config(function ($routeProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl',
-        controllerAs: 'main'
+  .config(function ($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise("/");
+
+    $stateProvider
+      .state("home", {
+        url: "/",
+        templateUrl: "views/main.html",
+        controller: "MainCtrl",
+        controllerAs: "mainCtrl"
       })
-      .when('/login', {
-        templateUrl: 'views/login.html',
-        controller: 'LoginCtrl',
-        controllerAs: 'login'
-      })
-      .otherwise({
-        redirectTo: '/'
+      .state("login", {
+        url: "/login",
+        templateUrl: "views/login.html",
+        controller: "LoginCtrl",
+        controllerAs: "loginCtrl"
       });
   })
-  .config(function($authProvider) {
-    $authProvider.configure({
-      apiUrl: '/api',
-      tokenValidationPath: '/auth/validate_token',
-      signOutUrl: '/auth/logout',
-      emailRegistrationPath: '/auth',
-      accountUpdatePath: '/auth',
-      accountDeletePath: '/auth',
-      confirmationSuccessUrl: window.location.href,
-      passwordResetPath: '/auth/password',
-      passwordUpdatePath: '/auth/password',
-      passwordResetSuccessUrl: window.location.href,
-      emailSignInPath: '/auth/sign_in',
-      tokenFormat: {
-        "access-token": "{{ token }}",
-        "token-type": "Bearer",
-        "client": "{{ clientId }}",
-        "expiry": "{{ expiry }}",
-        "uid": "{{ uid }}"
-      }
-    });
-  });
+  .constant("API_ROOT", "http://localhost:8000/api")
+;

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc function
@@ -7,6 +7,15 @@
  * # LoginCtrl
  * Controller of the scribbleApp
  */
-angular.module('scribbleApp')
-  .controller('LoginCtrl', function () {
-  });
+angular.module("scribbleApp")
+  .controller("LoginCtrl", ["UserService", "$state", function (userSvc, $state) {
+    this.login = function() {
+      userSvc
+        .login(this.email, this.password)
+        .then(function() {
+          $state.go("home");
+        }, function(resp) {
+          window.alert(resp.data.message);
+        });
+    };
+  }]);
