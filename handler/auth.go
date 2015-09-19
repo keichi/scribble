@@ -97,9 +97,9 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 		return nil, &ErrorResponse{http.StatusInternalServerError, err.Error()}
 	}
 
-	return map[string]string{
-		"token":          session.Token,
-		"session_period": string(sessionPeriod),
+	return map[string]interface{}{
+		"token":         session.Token,
+		"sessionPeriod": sessionPeriod,
 	}, nil
 }
 
