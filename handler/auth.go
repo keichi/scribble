@@ -124,3 +124,16 @@ func logout(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) 
 
 // Logout handles user logout requests
 var Logout = wrapJSONHandler(emptyRequest{}, logout)
+
+func getMyUser(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
+	authCtx := ctx.Value("auth").(*auth.Context)
+
+	if !authCtx.IsLoggedIn {
+		return nil, &ErrorResponse{http.StatusBadRequest, "not logged in"}
+	}
+
+	return authCtx.User, nil
+}
+
+// GetMyUser handles get current users requests
+var GetMyUser = wrapJSONHandler(emptyRequest{}, getMyUser)
