@@ -32,6 +32,12 @@ angular
         templateUrl: "views/login.html",
         controller: "LoginCtrl",
         controllerAs: "loginCtrl"
+      })
+      .state("editor", {
+        url: "/editor",
+        templateUrl: "views/editor.html",
+        controller: "EditorCtrl",
+        controllerAs: "editCtrl"
       });
   })
   .constant("API_ROOT", "http://localhost:8000/api")
