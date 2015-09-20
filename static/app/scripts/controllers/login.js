@@ -15,7 +15,11 @@ angular.module("scribbleApp")
         .then(function() {
           $state.go("home");
         }, function(resp) {
-          window.alert(resp.data.message);
+          if (resp.data) {
+            window.alert(resp.data.message);
+          } else {
+            window.alert("unknown error");
+          }
         });
     };
   }]);
