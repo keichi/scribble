@@ -114,7 +114,7 @@ func main() {
 	// TODO Allow any CORS request -- only during development!
 	kami.Use("/", func(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, X-Scribble-Session")
 		return ctx
 	})
 	kami.Options("/*path", func(w http.ResponseWriter, r *http.Request) {
