@@ -56,11 +56,7 @@ angular.module("scribbleApp")
       };
 
       service.getSessionToken = function() {
-        return ipCookie("token");
-      };
-
-      service.isLoggedIn = function() {
-        return isLoggedIn;
+        return ipCookie("token") || "";
       };
   }])
 
@@ -71,9 +67,8 @@ angular.module("scribbleApp")
           request: function(config) {
             var userSvc = $injector.get("UserService");
 
-            if (userSvc.isLoggedIn()) {
-              config.headers["X-Scribble-Session"] = userSvc.getSessionToken();
-            }
+            config.headers["X-Scribble-Session"] = userSvc.getSessionToken();
+
             return config;
           },
           responseError: function(rejection) {
