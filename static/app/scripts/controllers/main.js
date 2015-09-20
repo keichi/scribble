@@ -14,6 +14,6 @@ angular.module("scribbleApp")
         if (isLoggedIn) {
           $state.go("editor");
         }
-      })
+      });
     }
   ]);

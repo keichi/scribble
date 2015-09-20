@@ -11,11 +11,11 @@
 angular
   .module("scribbleApp", [
     "ngAnimate",
-    "ngResource",
     "ngRoute",
     "ngSanitize",
     "ipCookie",
-    "ui.router"
+    "ui.router",
+    "restangular"
   ])
   .config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/");
@@ -34,11 +34,16 @@ angular
         controllerAs: "loginCtrl"
       })
       .state("editor", {
-        url: "/editor",
+        url: "/editor/:noteId",
         templateUrl: "views/editor.html",
         controller: "EditorCtrl",
-        controllerAs: "editCtrl"
+        controllerAs: "editorCtrl"
       });
   })
   .constant("API_ROOT", "http://localhost:8000/api")
-;
+  .config(["RestangularProvider", "API_ROOT",
+    function (RestangularProvider, API_ROOT) {
+      RestangularProvider.setBaseUrl(API_ROOT);
+      RestangularProvider.setRequestSuffix("");
+    }
+  ]);
