@@ -12,7 +12,8 @@ angular.module("scribbleApp")
   .service("UserService", ["$http", "ipCookie", "API_ROOT",
     function ($http, ipCookie, API_ROOT) {
       var service = this;
-      var isLoggedIn = false;
+      service.user = null;
+      service.isLoggedIn = false;
 
       service.login = function(email, password) {
         return $http.post(API_ROOT + "/auth/login", {
@@ -36,18 +37,22 @@ angular.module("scribbleApp")
           expires: sessionPeriod,
           expirationUnit: "milliseconds"
         });
-        isLoggedIn = true;
+        service.isLoggedIn = true;
       };
 
       // Delete session from our browser and change login state
       service.invalidateSession = function() {
         ipCookie.remove("token");
-        isLoggedIn = false;
+        service.isLoggedIn = false;
+        service.user = null;
       };
 
       // Check current login state
       service.checkLoginStatus = function () {
-        return $http.get(API_ROOT + "/auth", {}).then(function() {
+        return $http.get(API_ROOT + "/auth", {}).then(function(resp) {
+          service.isLoggedIn = true;
+          service.user = resp.data;
+
           return true;
         }, function() {
           service.invalidateSession();
