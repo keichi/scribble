@@ -37,7 +37,7 @@ func Auth(ctx context.Context, w http.ResponseWriter, r *http.Request) context.C
 		return context.WithValue(ctx, "auth", authCtx)
 	}
 
-	if session.ExpiresAt < time.Now().UnixNano() / int64(time.Millisecond) {
+	if session.ExpiresAt < time.Now().UnixNano()/int64(time.Millisecond) {
 		dbMap.Delete(&session)
 		resp := &handler.ErrorResponse{
 			http.StatusBadRequest,

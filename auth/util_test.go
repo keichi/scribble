@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"testing"
 	"encoding/base64"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
