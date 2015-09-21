@@ -21,7 +21,6 @@ angular.module("scribbleApp")
           .withHttpConfig({transformRequest: angular.identity})
           .customPOST(file, "", undefined, {"Content-Type": file.type})
           .then(function(resp) {
-            var cursor = aceEditor.selection.getCursor();
             aceEditor.insert("![" + resp.uuid + "](" + resp.url + ")");
 
             // TODO Find better method to force re-render
