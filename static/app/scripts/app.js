@@ -17,53 +17,53 @@ angular
     "ui.router",
     "restangular",
     "ui.ace",
-    "hc.marked"
+    "hc.marked",
+    "ui.bootstrap"
   ])
   .config(["$stateProvider", "$urlRouterProvider",
     function ($stateProvider, $urlRouterProvider) {
       $urlRouterProvider.otherwise("/");
 
       $stateProvider
-        .state("home", {
-          url: "/",
+        .state("root", {
+          url: "",
           views: {
             header: {
               templateUrl: "views/header.html"
-            },
-            content: {
+            }
+          }
+        })
+        .state("root.home", {
+          url: "/",
+          views: {
+            "content@": {
               templateUrl: "views/main.html",
               controller: "MainCtrl",
               controllerAs: "mainCtrl"
             }
           }
         })
-        .state("login", {
+        .state("root.login", {
           url: "/login",
           views: {
-            header: {
-              templateUrl: "views/header.html"
-            },
-            content: {
+            "content@": {
               templateUrl: "views/login.html",
               controller: "LoginCtrl",
               controllerAs: "loginCtrl"
             }
           }
         })
-        .state("viewer", {
+        .state("root.viewer", {
           url: "/viewer",
           views: {
-            header: {
-              templateUrl: "views/header.html"
-            },
-            content: {
+            "content@": {
               templateUrl: "views/viewer.html",
               controller: "ViewerCtrl",
               controllerAs: "viewerCtrl"
             }
           }
         })
-        .state("viewer.detail", {
+        .state("root.viewer.detail", {
           url: "/:noteId",
           views: {
             detail: {
@@ -73,13 +73,10 @@ angular
             }
           }
         })
-        .state("editor", {
+        .state("root.editor", {
           url: "/editor/:noteId",
           views: {
-            header: {
-              templateUrl: "views/header.html"
-            },
-            content: {
+            "content@": {
               templateUrl: "views/editor.html",
               controller: "EditorCtrl",
               controllerAs: "editorCtrl"

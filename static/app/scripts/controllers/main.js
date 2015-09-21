@@ -12,7 +12,7 @@ angular.module("scribbleApp")
     function ($state, userSvc) {
       userSvc.checkLoginStatus().then(function(isLoggedIn) {
         if (isLoggedIn) {
-          $state.go("viewer");
+          $state.go("root.viewer");
         }
       });
     }

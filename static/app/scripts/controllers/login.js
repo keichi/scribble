@@ -13,7 +13,7 @@ angular.module("scribbleApp")
       userSvc
         .login(this.email, this.password)
         .then(function() {
-          $state.go("home");
+          $state.go("root.home");
         }, function(resp) {
           if (resp.data) {
             window.alert(resp.data.message);

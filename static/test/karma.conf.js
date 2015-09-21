@@ -25,6 +25,7 @@ module.exports = function(config) {
       'bower_components/jquery/dist/jquery.js',
       'bower_components/angular/angular.js',
       'bower_components/angular-animate/angular-animate.js',
+      'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/angular-cookie/angular-cookie.js',
       'bower_components/marked/lib/marked.js',
       'bower_components/angular-marked/angular-marked.js',
