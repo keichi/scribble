@@ -27,6 +27,7 @@ angular
       $stateProvider
         .state("root", {
           url: "",
+          abstract: true,
           views: {
             header: {
               templateUrl: "views/header.html"
