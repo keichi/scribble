@@ -10,7 +10,7 @@
 angular.module("scribbleApp")
   .controller("ViewerCtrl", ["$scope", "$stateParams", "Restangular",
     function ($scope, $stateParams, Restangular) {
-      Restangular.all("notes").getList().then(function(notes) {
+      Restangular.one("my").all("notes").getList().then(function(notes) {
         $scope.notes = notes;
       });
 
