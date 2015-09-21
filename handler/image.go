@@ -38,10 +38,12 @@ func AddImage(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	path := uuid.NewV4().String()
 	image := &model.Image{
 		ID:          0,
 		ContentType: r.Header.Get("Content-Type"),
-		UUID:        uuid.NewV4().String(),
+		UUID:        path,
+		URL:         bucket.URL(path),
 		NoteID:      int64(noteID),
 		Note:        note,
 	}

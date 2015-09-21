@@ -11,6 +11,7 @@ type Image struct {
 	ID          int64  `db:"id" json:"id,omitempty"`
 	ContentType string `db:"content_type" json:"contentType"`
 	UUID        string `db:"uuid" json:"uuid"`
+	URL         string `db:"url" json:"url"`
 	NoteID      int64  `db:"note_id" json:"noteId,omitempty"`
 	Note        *Note  `db:"-" json:"-"`
 	CreatedAt   int64  `db:"created_at" json:"createdAt,omitempty"`

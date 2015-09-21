@@ -27,8 +27,9 @@ CREATE TABLE notes (
 
 CREATE TABLE images (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  content_type VARCHAR(256),
+  content_type VARCHAR(32),
   uuid VARCHAR(36),
+  url VARCHAR(128),
   note_id INT64,
   created_at INT64,
   updated_at INT64
