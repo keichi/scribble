@@ -17,6 +17,6 @@ angular.module('scribbleApp')
       $scope.remove = function() {
         $scope.currentNote.remove();
         $state.go("root.viewer");
-      }
+      };
     }
   ]);
