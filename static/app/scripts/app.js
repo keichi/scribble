@@ -99,8 +99,11 @@ angular
       gfm: true,
       tables: true,
       sanitize: true,
-      highlight: function (code) {
-        return hljs.highlightAuto(code).value;
+      highlight: function (code, lang) {
+        if (!lang || !hljs.getLanguage(lang)) {
+          return code;
+        }
+        return hljs.highlight(lang, code).value;
       }
     });
   }]);
