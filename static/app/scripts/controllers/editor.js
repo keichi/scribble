@@ -18,6 +18,6 @@ angular.module("scribbleApp")
       };
 
       $scope.aceChange = function() {
-      }
+      };
     }
   ]);
