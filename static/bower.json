@@ -11,6 +11,7 @@
     "angular-ui-ace": "~0.2.3",
     "angular-ui-router": "~0.2.15",
     "bootstrap": "^3.2.0",
+    "highlightjs": "~8.8.0",
     "restangular": "~1.5.1"
   },
   "devDependencies": {
