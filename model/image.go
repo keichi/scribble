@@ -35,13 +35,13 @@ func (image *Image) Authorize(user *User, action AuthorizedAction) bool {
 
 // PreInsert is fired before the entity is being inserted
 func (image *Image) PreInsert(s gorp.SqlExecutor) error {
-	image.CreatedAt = time.Now().UnixNano()
+	image.CreatedAt = time.Now().UnixNano() / int64(time.Millisecond)
 	image.UpdatedAt = image.CreatedAt
 	return nil
 }
 
 // PreUpdate is fired before the entity is being updated
 func (image *Image) PreUpdate(s gorp.SqlExecutor) error {
-	image.UpdatedAt = time.Now().UnixNano()
+	image.UpdatedAt = time.Now().UnixNano() / int64(time.Millisecond)
 	return nil
 }

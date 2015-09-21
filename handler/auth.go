@@ -90,7 +90,7 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	session := model.Session{
 		Token:     auth.NewToken(),
 		UserID:    user.ID,
-		ExpiresAt: time.Now().Add(sessionPeriod * time.Millisecond).UnixNano(),
+		ExpiresAt: time.Now().Add(sessionPeriod * time.Millisecond).UnixNano() / int64(time.Millisecond),
 	}
 
 	if err := dbMap.Insert(&session); err != nil {

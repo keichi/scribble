@@ -18,13 +18,13 @@ type Session struct {
 
 // PreInsert is fired before the entity is being inserted
 func (session *Session) PreInsert(s gorp.SqlExecutor) error {
-	session.CreatedAt = time.Now().UnixNano()
+	session.CreatedAt = time.Now().UnixNano() / int64(time.Millisecond)
 	session.UpdatedAt = session.CreatedAt
 	return nil
 }
 
 // PreUpdate is fired before the entity is being updated
 func (session *Session) PreUpdate(s gorp.SqlExecutor) error {
-	session.UpdatedAt = time.Now().UnixNano()
+	session.UpdatedAt = time.Now().UnixNano() / int64(time.Millisecond)
 	return nil
 }

@@ -68,13 +68,13 @@ func (note *Note) PostGet(s gorp.SqlExecutor) error {
 
 // PreInsert is fired before the entity is being inserted
 func (note *Note) PreInsert(s gorp.SqlExecutor) error {
-	note.CreatedAt = time.Now().UnixNano()
+	note.CreatedAt = time.Now().UnixNano() / int64(time.Millisecond)
 	note.UpdatedAt = note.CreatedAt
 	return nil
 }
 
 // PreUpdate is fired before the entity is being updated
 func (note *Note) PreUpdate(s gorp.SqlExecutor) error {
-	note.UpdatedAt = time.Now().UnixNano()
+	note.UpdatedAt = time.Now().UnixNano() / int64(time.Millisecond)
 	return nil
 }

@@ -40,13 +40,13 @@ func (user *User) PostGet(s gorp.SqlExecutor) error {
 
 // PreInsert is fired before the entity is being inserted
 func (user *User) PreInsert(s gorp.SqlExecutor) error {
-	user.CreatedAt = time.Now().UnixNano()
+	user.CreatedAt = time.Now().UnixNano() / int64(time.Millisecond)
 	user.UpdatedAt = user.CreatedAt
 	return nil
 }
 
 // PreUpdate is fired before the entity is being updated
 func (user *User) PreUpdate(s gorp.SqlExecutor) error {
-	user.UpdatedAt = time.Now().UnixNano()
+	user.UpdatedAt = time.Now().UnixNano() / int64(time.Millisecond)
 	return nil
 }
