@@ -15,7 +15,9 @@ angular
     "ngSanitize",
     "ipCookie",
     "ui.router",
-    "restangular"
+    "restangular",
+    "ui.ace",
+    "hc.marked"
   ])
   .config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/");
@@ -48,6 +50,12 @@ angular
             controllerAs: "viewerDetailCtrl"
           }
         }
+      })
+      .state("editor", {
+        url: "/editor/:noteId",
+        templateUrl: "views/editor.html",
+        controller: "EditorCtrl",
+        controllerAs: "editorCtrl"
       });
   })
   .constant("API_ROOT", "http://localhost:8000/api")
@@ -55,4 +63,10 @@ angular
     function (RestangularProvider, API_ROOT) {
       RestangularProvider.setBaseUrl(API_ROOT);
     }
-  ]);
+  ])
+  .config(["markedProvider", function(markedProvider) {
+    markedProvider.setOptions({
+      gfm: true,
+      tables: true
+    });
+  }]);

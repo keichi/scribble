@@ -8,3 +8,5 @@
 body {
   padding: 0;
 }
+
+.ace_editor { height: 200px; }
