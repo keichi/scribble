@@ -26,21 +26,42 @@ angular
       $stateProvider
         .state("home", {
           url: "/",
-          templateUrl: "views/main.html",
-          controller: "MainCtrl",
-          controllerAs: "mainCtrl"
+          views: {
+            header: {
+              templateUrl: "views/header.html"
+            },
+            content: {
+              templateUrl: "views/main.html",
+              controller: "MainCtrl",
+              controllerAs: "mainCtrl"
+            }
+          }
         })
         .state("login", {
           url: "/login",
-          templateUrl: "views/login.html",
-          controller: "LoginCtrl",
-          controllerAs: "loginCtrl"
+          views: {
+            header: {
+              templateUrl: "views/header.html"
+            },
+            content: {
+              templateUrl: "views/login.html",
+              controller: "LoginCtrl",
+              controllerAs: "loginCtrl"
+            }
+          }
         })
         .state("viewer", {
           url: "/viewer",
-          templateUrl: "views/viewer.html",
-          controller: "ViewerCtrl",
-          controllerAs: "viewerCtrl"
+          views: {
+            header: {
+              templateUrl: "views/header.html"
+            },
+            content: {
+              templateUrl: "views/viewer.html",
+              controller: "ViewerCtrl",
+              controllerAs: "viewerCtrl"
+            }
+          }
         })
         .state("viewer.detail", {
           url: "/:noteId",
@@ -54,9 +75,16 @@ angular
         })
         .state("editor", {
           url: "/editor/:noteId",
-          templateUrl: "views/editor.html",
-          controller: "EditorCtrl",
-          controllerAs: "editorCtrl"
+          views: {
+            header: {
+              templateUrl: "views/header.html"
+            },
+            content: {
+              templateUrl: "views/editor.html",
+              controller: "EditorCtrl",
+              controllerAs: "editorCtrl"
+            }
+          }
         });
   }])
   .constant("API_ROOT", "http://localhost:8000/api")
