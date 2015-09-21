@@ -98,6 +98,7 @@ angular
     markedProvider.setOptions({
       gfm: true,
       tables: true,
+      sanitize: true,
       highlight: function (code) {
         return hljs.highlightAuto(code).value;
       }
