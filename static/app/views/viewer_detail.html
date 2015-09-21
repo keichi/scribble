@@ -4,7 +4,14 @@
       <h1>{{ currentNote.title }}</h1>
     </div>
     <div class="pull-right">
-      <button ui-sref="root.editor({noteId: currentNote.id})"type="button" class="btn btn-primary">Edit</button>
+      <button ng-click="remove()"
+              type="button" class="btn btn-danger">
+        <span class="glyphicon glyphicon-remove"></span>&nbsp;Delete
+      </button>
+      <button ui-sref="root.editor({noteId: currentNote.id})"
+              type="button" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit
+      </button>
     </div>
   </div>
   <div>{{ currentNote.content }}</div>
