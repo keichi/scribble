@@ -94,6 +94,12 @@ func CheckIfImageExists(ctx context.Context, w http.ResponseWriter, r *http.Requ
 // CheckIfNoteExists middleware checks if user is logged in
 func CheckIfLoggedIn(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
 	auth := ctx.Value("auth").(*auth.Context)
+
+	// TODO development only
+	if r.Method == "OPTIONS" {
+		return ctx
+	}
+
 	if !auth.IsLoggedIn {
 		resp := &handler.ErrorResponse{
 			http.StatusUnauthorized,
