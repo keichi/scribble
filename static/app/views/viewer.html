@@ -2,17 +2,13 @@
   <div class="col-md-4">
     <div class="list-group">
       <a ng-repeat="note in notes"
-         ng-class="{active:note.id == currentNote.id}"
-         ui-sref="editor({noteId: note.id})"
+         ui-sref-active="active"
+         ui-sref=".detail({noteId: note.id})"
          class="list-group-item">
         <h4 class="list-group-item-heading">{{ note.title }}</h4>
         <p class="list-group-item-text">{{ note.content | limitTo:120 }}</p>
       </a>
     </div>
   </div>
-
-  <div class="col-md-8">
-    <h1>{{ currentNote.title }}</h1>
-    <div>{{ currentNote.content }}</div>
-  </div>
+  <div ui-view="detail"></div>
 </div>

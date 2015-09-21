@@ -33,17 +33,26 @@ angular
         controller: "LoginCtrl",
         controllerAs: "loginCtrl"
       })
-      .state("editor", {
-        url: "/editor/:noteId",
-        templateUrl: "views/editor.html",
-        controller: "EditorCtrl",
-        controllerAs: "editorCtrl"
+      .state("viewer", {
+        url: "/viewer",
+        templateUrl: "views/viewer.html",
+        controller: "ViewerCtrl",
+        controllerAs: "viewerCtrl"
+      })
+      .state("viewer.detail", {
+        url: "/:noteId",
+        views: {
+          detail: {
+            templateUrl: "views/viewer_detail.html",
+            controller: "ViewerDetailCtrl",
+            controllerAs: "viewerDetailCtrl"
+          }
+        }
       });
   })
   .constant("API_ROOT", "http://localhost:8000/api")
   .config(["RestangularProvider", "API_ROOT",
     function (RestangularProvider, API_ROOT) {
       RestangularProvider.setBaseUrl(API_ROOT);
-      RestangularProvider.setRequestSuffix("");
     }
   ]);
