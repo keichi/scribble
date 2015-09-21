@@ -14,6 +14,10 @@ angular.module("scribbleApp")
         $scope.note = note;
       });
 
+      $scope.save = function() {
+        $scope.note.save();
+      };
+
       $scope.aceLoad = function() {
       };
 
