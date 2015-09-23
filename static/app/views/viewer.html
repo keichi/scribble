@@ -1,17 +1,15 @@
-<div class="row">
-  <div class="col-md-4">
-    <div class="list-group">
-      <a ng-repeat="note in notes"
-         ui-sref-active="active"
-         ui-sref=".detail({noteId: note.id})"
-         class="list-group-item">
-        <div class="clearfix">
-          <h4 class="pull-left list-group-item-heading">{{ note.title }}</h4>
-          <div class="pull-right">{{ note.updatedAt | date:"short" }}</div>
-        </div>
-        <p class="list-group-item-text">{{ note.content | limitTo:120 }}</p>
-      </a>
-    </div>
+<div class="col-scrollable note-list">
+  <div class="list-group">
+    <a ng-repeat="note in notes"
+       ui-sref-active="active"
+       ui-sref=".detail({noteId: note.id})"
+       class="list-group-item">
+      <div class="clearfix">
+        <h4 class="pull-left list-group-item-heading">{{ note.title }}</h4>
+        <div class="pull-right">{{ note.updatedAt | date:"short" }}</div>
+      </div>
+      <p class="list-group-item-text">{{ note.content | limitTo:120 }}</p>
+    </a>
   </div>
-  <div ui-view="detail"></div>
 </div>
+<div ui-view="detail"></div>
