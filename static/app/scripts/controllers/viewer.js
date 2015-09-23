@@ -15,5 +15,11 @@ angular.module("scribbleApp")
       });
 
       $scope.currentNoteId = $stateParams.noteId;
+
+      $scope.paginate = function() {
+        Restangular.one("my").all("notes").getList().then(function(notes) {
+          Array.prototype.push.apply($scope.notes, notes);
+        });
+      };
     }
   ]);

@@ -21,7 +21,8 @@ angular
     "hc.marked",
     "ui.bootstrap",
     "angular-loading-bar",
-    "ui-notification"
+    "ui-notification",
+    "infinite-scroll"
   ])
   .config(["$stateProvider", "$urlRouterProvider",
     function ($stateProvider, $urlRouterProvider) {
