@@ -1,20 +1,25 @@
 <div class="col-scrollable note-source">
-  <div class="note-meta-cotrols">
+  <div class="note-meta-controls">
     <div class="clearfix">
+      <div class="pull-left">
+        <button ui-sref="root.viewer.detail({noteId: note.id})" type="button" class="btn btn-default">
+          <span class="glyphicon glyphicon-chevron-left"></span> &nbsp;Back
+        </button>
+      </div>
       <div class="pull-right">
         <button ng-click="save()" type="button" class="btn btn-primary">
           <span class="glyphicon glyphicon-save"></span> &nbsp;Save
         </button>
       </div>
     </div>
-    <div>
-      <input ng-model="note.title" type="text" class="form-control" placeholder="Note Title">
-    </div>
+  </div>
+  <div>
+    <input ng-model="note.title" type="text" class="form-control" placeholder="Note Title">
   </div>
   <div ng-model="note.content" ui-ace="{
     mode: 'markdown',
     onLoad: aceLoaded,
-    onChange: aceChanged
+    onChange: aceChanged,
   }"></div>
 </div>
 

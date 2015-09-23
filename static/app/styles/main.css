@@ -66,6 +66,10 @@ main > .container {
   width: 50%;
 }
 
+.note-meta-controls {
+  margin: 5px 0;
+}
+
 .ace_editor {
   height: 100%;
 }
