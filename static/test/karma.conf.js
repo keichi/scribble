@@ -33,6 +33,7 @@ module.exports = function(config) {
       'bower_components/angular-route/angular-route.js',
       'bower_components/angular-sanitize/angular-sanitize.js',
       'bower_components/angular-ui-ace/ui-ace.js',
+      'bower_components/angular-ui-notification/dist/angular-ui-notification.min.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
       'bower_components/blueimp-md5/js/md5.js',
       'bower_components/bootswatch-dist/js/bootstrap.js',

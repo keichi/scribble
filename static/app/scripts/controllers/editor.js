@@ -8,8 +8,8 @@
  * Controller of the scribbleApp
  */
 angular.module("scribbleApp")
-  .controller("EditorCtrl", ["$scope", "$stateParams", "Restangular",
-    function($scope, $stateParams, Restangular) {
+  .controller("EditorCtrl", ["$scope", "$stateParams", "Restangular", "Notification",
+    function($scope, $stateParams, Restangular, Notification) {
       var aceEditor;
 
       Restangular.one("notes", $stateParams.noteId).get().then(function(note) {
@@ -32,7 +32,11 @@ angular.module("scribbleApp")
       };
 
       $scope.save = function() {
-        $scope.note.save();
+        $scope.note.save().then(function() {
+          Notification.success("Note sucessfully saved.");
+        }, function() {
+          Notification.error("Note could not be saved.");
+        });
       };
 
       $scope.aceLoaded = function(editor) {
