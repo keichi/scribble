@@ -119,4 +119,7 @@ angular
       positionX: 'right',
       positionY: 'bottom'
     });
+  }])
+  .config(["cfpLoadingBarProvider", function(cfpLoadingBarProvider) {
+    cfpLoadingBarProvider.includeSpinner = false;
   }]);
