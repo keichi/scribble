@@ -16,6 +16,7 @@ body {
 }
 
 header {
+  z-index: 10;
   position: relative;
   width: 100%;
   height: auto;
@@ -26,6 +27,7 @@ header .navbar {
 }
 
 main {
+  z-index: 0;
   position: relative;
   width: 100%;
   top: -45px;
@@ -38,10 +40,6 @@ main > .container {
   padding: 0;
 }
 
-.ace_editor {
-  height: 500px;
-}
-
 .navbar .profile-image {
   margin: -10px 5px -10px 0;
 }
@@ -49,18 +47,31 @@ main > .container {
 .col-scrollable {
   position: absolute;
   overflow: scroll;
+  bottom: 0;
+  top: 45px;
 }
 
-.col-scrollable.note-list {
+.note-list {
   width: 33%;
   top: 45px;
-  bottom: 0;
 }
 
-.col-scrollable.note-view {
+.note-view {
   left: 33%;
   width: 66%;
-  top: 45px;
-  bottom: 0;
+  padding: 0 15px;
+}
+
+.note-source {
+  width: 50%;
+}
+
+.ace_editor {
+  height: 100%;
+}
+
+.note-preview {
+  left: 50%;
+  width: 50%;
   padding: 0 15px;
 }
