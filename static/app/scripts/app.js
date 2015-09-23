@@ -19,7 +19,8 @@ angular
     "restangular",
     "ui.ace",
     "hc.marked",
-    "ui.bootstrap"
+    "ui.bootstrap",
+    "angular-loading-bar"
   ])
   .config(["$stateProvider", "$urlRouterProvider",
     function ($stateProvider, $urlRouterProvider) {
