@@ -60,10 +60,14 @@ main > .container {
   margin-bottom: 0;
 }
 
+.note-title h1 {
+  margin-top: 0;
+}
+
 .note-view {
   left: 33%;
   width: 66%;
-  padding: 0 15px;
+  padding: 20px 15px 0 15px;
 }
 
 .note-source {
