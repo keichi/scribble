@@ -1,5 +1,5 @@
 # scribble
 
-![Build Status](https://img.shields.io/shippable/55f299491895ca4474149e70.svg)
+[![Circle CI](https://circleci.com/gh/keichi/scribble.svg?style=svg)](https://circleci.com/gh/keichi/scribble)
 
 Simple app to take notes.
