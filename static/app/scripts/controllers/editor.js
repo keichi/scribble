@@ -1,3 +1,4 @@
+/* global key */
 "use strict";
 
 /**
@@ -102,9 +103,26 @@ angular.module("scribbleApp")
           }
         });
 
+        editor.commands.addCommand({
+          name: "replace",
+          bindKey: {win: "Ctrl-S", mac: "Command-S"},
+          exec: function() {
+            $scope.$emit("editor.saveNote");
+          }
+        });
       };
 
       $scope.aceChanged = function() {
       };
+
+      $scope.$on("editor.saveNote", function() {
+        $scope.save();
+      });
+
+      key("ctrl+s, command+s", "editor", function(e) {
+        e.preventDefault();
+        $scope.$broadcast("editor.saveNote");
+      });
+      key.setScope("editor");
     }
   ]);
