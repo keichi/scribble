@@ -73,6 +73,10 @@ angular.module("scribbleApp")
         e.preventDefault();
         $scope.$broadcast("viewer.deleteNote");
       });
+      key("n", "viewer", function(e) {
+        e.preventDefault();
+        $scope.$broadcast("viewer.newNote");
+      });
       key.setScope("viewer");
     }
   ]);

@@ -33,6 +33,10 @@ angular.module("scribbleApp")
         $scope.remove();
       });
 
+      $scope.$on("viewer.newNote", function() {
+        $state.go("root.editor");
+      });
+
       key("up", "viewer", function(e) {
         e.preventDefault();
         $scope.$emit("viewer.selectNote", {

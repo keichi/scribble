@@ -81,7 +81,7 @@ angular
           }
         })
         .state("root.editor", {
-          url: "/editor/{noteId:[0-9]+}",
+          url: "/editor/{noteId:[0-9]*}",
           views: {
             "content@": {
               templateUrl: "views/editor.html",
