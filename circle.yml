@@ -1,0 +1,18 @@
+machine:
+  timezone:
+    Asia/Tokyo
+
+dependencies:
+  cache_directories:
+    - static/node_modules
+    - static/bower_componets
+
+test:
+  post:
+    - cp -r migrations $CIRCLE_ARTIFACTS
+    - cd static
+    - npm install --dev
+    - bower install
+    - grunt build
+    - cp -r dist $CIRCLE_ARTIFACTS/static
+    - cp ~/.go_workspace/bin/scribble $CIRCLE_ARTIFACTS/
