@@ -71,7 +71,7 @@ angular
           }
         })
         .state("root.viewer.detail", {
-          url: "/:noteId",
+          url: "/{noteId:[0-9]+}",
           views: {
             detail: {
               templateUrl: "views/viewer_detail.html",
@@ -81,7 +81,7 @@ angular
           }
         })
         .state("root.editor", {
-          url: "/editor/:noteId",
+          url: "/editor/{noteId:[0-9]+}",
           views: {
             "content@": {
               templateUrl: "views/editor.html",
