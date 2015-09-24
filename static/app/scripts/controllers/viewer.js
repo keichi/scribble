@@ -9,8 +9,8 @@
  * Controller of the scribbleApp
  */
 angular.module("scribbleApp")
-  .controller("ViewerCtrl", ["$scope", "Restangular",
-    function ($scope, Restangular) {
+  .controller("ViewerCtrl", ["$scope", "$state", "Restangular",
+    function ($scope, $state, Restangular) {
       $scope.notes = [];
       $scope.isBusy = false;
 
@@ -43,6 +43,27 @@ angular.module("scribbleApp")
           return note.id === parseInt(noteId, 10);
         });
       };
+
+      $scope.$on("viewer.selectNote", function(e, data) {
+        var noteId = parseInt(data.noteId, 10);
+        var direction = data.direction;
+
+        var currentIdx = 0;
+        if ($state.is("root.viewer.detail")) {
+          currentIdx = _.findIndex($scope.notes, function(note) {
+            return note.id === noteId;
+          });
+
+          if (direction === "next") {
+            currentIdx++;
+          } else if (direction === "previous") {
+            currentIdx--;
+          }
+        }
+        if (0 <= currentIdx && currentIdx < $scope.notes.length) {
+          $state.go("root.viewer.detail", {noteId: $scope.notes[currentIdx].id});
+        }
+      });
 
       key("enter", "viewer", function(e) {
         e.preventDefault();

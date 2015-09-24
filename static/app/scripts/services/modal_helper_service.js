@@ -51,6 +51,6 @@ angular.module("scribbleApp")
 
       $scope.$on("modal.closing", function() {
         key.setScope(prevKeyScope);
-      })
+      });
     }
   ]);

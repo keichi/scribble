@@ -1,3 +1,4 @@
+/* global key */
 "use strict";
 
 /**
@@ -30,6 +31,21 @@ angular.module("scribbleApp")
 
       $scope.$on("viewer.deleteNote", function() {
         $scope.remove();
+      });
+
+      key("up", "viewer", function(e) {
+        e.preventDefault();
+        $scope.$emit("viewer.selectNote", {
+          noteId: $stateParams.noteId,
+          direction: "previous"
+        });
+      });
+      key("down", "viewer", function(e) {
+        e.preventDefault();
+        $scope.$emit("viewer.selectNote", {
+          noteId: $stateParams.noteId,
+          direction: "next"
+        });
       });
     }
   ]);
