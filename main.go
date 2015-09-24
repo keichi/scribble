@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"log"
 	"net/http"
 	"os"
 
@@ -113,6 +112,9 @@ func main() {
 	kami.Get("/api/my/notes/:noteId", handler.GetNote)
 	kami.Put("/api/my/notes/:noteId", handler.UpdateNote)
 	kami.Delete("/api/my/notes/:noteId", handler.DeleteNote)
+
+	// Ping API
+	kami.Get("/api/ping", handler.Ping)
 
 	// TODO Allow any CORS request -- only during development!
 	kami.Use("/", func(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
