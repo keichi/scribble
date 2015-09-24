@@ -9,9 +9,9 @@ dependencies:
 
 test:
   post:
-    - cp -r migrations $CIRCLE_ARTIFACTS
     - cd static && npm install --dev
     - cd static && bower install
     - cd static && grunt build
     - cp -r dist $CIRCLE_ARTIFACTS/static
+    - cp -r migrations $CIRCLE_ARTIFACTS
     - cp ~/.go_workspace/bin/scribble $CIRCLE_ARTIFACTS/
