@@ -42,29 +42,30 @@ func initDB() *gorp.DbMap {
 }
 
 func initS3() *s3.Bucket {
-	//	auth, err := aws.EnvAuth()
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//
-	//	s3 := s3.New(auth, aws.APNortheast)
-	//	bucket := s3.Bucket("scribble-image-store")
-	//
-	//	return bucket
+	region := aws.Region{}
+	auth, err := aws.EnvAuth()
 
-	// TODO Fake S3 server -- only use it during development
-	srv, err := s3test.NewServer(&s3test.Config{})
 	if err != nil {
-		panic(err)
-	}
-	region := aws.Region{
-		Name:                 "dummy-region-1",
-		S3Endpoint:           srv.URL(),
-		S3LocationConstraint: true,
+		srv, err := s3test.NewServer(&s3test.Config{})
+		if err != nil {
+			panic(err)
+		}
+		region = aws.Region{
+			Name:                 "dummy-region-1",
+			S3Endpoint:           srv.URL(),
+			S3LocationConstraint: true,
+		}
+	} else {
+		region = aws.APNortheast
 	}
 
-	bucket := s3.New(aws.Auth{}, region).Bucket("scribble-image-store")
-	bucket.PutBucket(s3.PublicRead)
+	bucketName := os.Getenv("S3_BUCKET")
+	if bucketName == "" {
+		bucketName = "scribble-image-store"
+	}
+
+	s3 := s3.New(auth, region)
+	bucket := s3.Bucket(bucketName)
 
 	return bucket
 }
@@ -72,9 +73,6 @@ func initS3() *s3.Bucket {
 func main() {
 	dbMap := initDB()
 	defer dbMap.Db.Close()
-
-	// TODO Trace SQL only during development
-	dbMap.TraceOn("[gorp]", log.New(os.Stdout, "scribble: ", log.Lmicroseconds))
 
 	bucket := initS3()
 
