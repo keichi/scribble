@@ -4,10 +4,20 @@
       <h1>{{ currentNote.title }}</h1>
     </div>
     <div class="pull-right">
-      <button ng-click="remove()"
-              type="button" class="btn btn-danger">
-        <span class="glyphicon glyphicon-remove"></span>&nbsp;Delete
-      </button>
+
+      <div class="btn-group" dropdown>
+        <button type="button" class="btn btn-primary" dropdown-toggle>
+          Action &nbsp;<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li role="menuitem">
+            <a ng-click="remove()" role="button">
+              <span class="glyphicon glyphicon-trash"></span>&nbsp;Delete
+            </a>
+          </li>
+        </ul>
+      </div>
+
       <button ui-sref="root.editor({noteId: currentNote.id})"
               type="button" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit
