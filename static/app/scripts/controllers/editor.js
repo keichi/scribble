@@ -49,6 +49,11 @@ angular.module("scribbleApp")
       };
 
       $scope.save = function() {
+        if ($scope.note.title === "") {
+          modalSvc.alert("Failed to save note", "Title is empty.");
+          return;
+        }
+
         if (isNew) {
           Restangular.all("notes").post($scope.note)
             .then(function(resp) {
