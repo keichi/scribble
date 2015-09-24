@@ -19,7 +19,7 @@ angular.module("scribbleApp")
         $scope.note = {
           title: "",
           content: ""
-        }
+        };
       } else {
         isNew = false;
         Restangular.one("notes", $stateParams.noteId).get().then(function(note) {
