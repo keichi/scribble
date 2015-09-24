@@ -127,5 +127,14 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
+	fileServer := http.FileServer(http.Dir("static"))
+	kami.Get("/", fileServer)
+	kami.Get("/404.html", fileServer)
+	kami.Get("/robots.txt", fileServer)
+	kami.Get("/favicon.ico", fileServer)
+	kami.Get("/fonts/*path", fileServer)
+	kami.Get("/scripts/*path", fileServer)
+	kami.Get("/styles/*path", fileServer)
+
 	kami.Serve()
 }
