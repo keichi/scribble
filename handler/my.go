@@ -46,8 +46,8 @@ func listMyNotes(ctx context.Context, req interface{}) (interface{}, *ErrorRespo
 	}
 
 	var notes []model.Note
-	_, err := db.Select(&notes, `select * from notes where
-									owner_id = ? limit ? offset ?`,
+	_, err := db.Select(&notes, `select * from notes where owner_id = ?
+						order by updated_at desc limit ? offset ? `,
 		auth.User.ID, limit, offset)
 	if err != nil {
 		return nil, &ErrorResponse{

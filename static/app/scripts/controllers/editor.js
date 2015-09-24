@@ -9,14 +9,31 @@
  */
 angular.module("scribbleApp")
   .controller("EditorCtrl", ["$scope", "$stateParams", "Restangular",
-    function($scope, $stateParams, Restangular) {
-      var aceEditor;
+    "Notification", "ModalHelperService",
+    function($scope, $stateParams, Restangular, Notification, modalSvc) {
+      var aceEditor = null;
+      var isNew = false;
 
-      Restangular.one("notes", $stateParams.noteId).get().then(function(note) {
-        $scope.note = note;
-      });
+      if ($stateParams.noteId === "") {
+        isNew = true;
+        $scope.note = {
+          title: "",
+          content: ""
+        };
+      } else {
+        isNew = false;
+        Restangular.one("notes", $stateParams.noteId).get().then(function(note) {
+          $scope.note = note;
+        });
+      }
 
       var uploadIamge = function(file) {
+        if (isNew) {
+          modalSvc.alert("Upload Image",
+            "Please save this note before uploading an image");
+          return;
+        }
+
         $scope.note.one("/images")
           .withHttpConfig({transformRequest: angular.identity})
           .customPOST(file, "", undefined, {"Content-Type": file.type})
@@ -32,7 +49,24 @@ angular.module("scribbleApp")
       };
 
       $scope.save = function() {
-        $scope.note.save();
+        if (isNew) {
+          Restangular.all("notes").post($scope.note)
+            .then(function(resp) {
+              Notification.success("Note successfully saved.");
+              $scope.note = resp;
+              isNew = false;
+            })
+            .catch(function() {
+              Notification.error("Note could not be saved.");
+            });
+        }
+
+        $scope.note.save().then(function() {
+          Notification.success("Note successfully saved.");
+        })
+        .catch(function() {
+          Notification.error("Note could not be saved.");
+        });
       };
 
       $scope.aceLoaded = function(editor) {

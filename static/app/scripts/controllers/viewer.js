@@ -1,3 +1,4 @@
+/* global _ */
 "use strict";
 
 /**
@@ -10,10 +11,38 @@
 angular.module("scribbleApp")
   .controller("ViewerCtrl", ["$scope", "$stateParams", "Restangular",
     function ($scope, $stateParams, Restangular) {
-      Restangular.one("my").all("notes").getList().then(function(notes) {
-        $scope.notes = notes;
-      });
-
+      $scope.notes = [];
       $scope.currentNoteId = $stateParams.noteId;
+      $scope.isBusy = false;
+
+      var nextOffset = 0;
+      var nextAvailable = true;
+      var pageSize = 10;
+      $scope.paginate = function() {
+        if (!nextAvailable || $scope.isBusy) {
+          return;
+        }
+
+        $scope.isBusy = true;
+        Restangular.one("my").all("notes")
+          .getList({limit: pageSize, offset: nextOffset})
+          .then(function(notes) {
+            if (notes.length === 0) {
+              nextAvailable = false;
+            } else {
+              Array.prototype.push.apply($scope.notes, notes);
+              nextOffset += pageSize;
+            }
+          })
+          .finally(function() {
+            $scope.isBusy = false;
+          });
+      };
+
+      $scope.removeNote = function(noteId) {
+        _.remove($scope.notes, function(note) {
+          return note.id === parseInt(noteId, 10);
+        });
+      };
     }
   ]);
