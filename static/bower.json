@@ -16,6 +16,7 @@
     "blueimp-md5": "~1.1.1",
     "bootswatch-dist": "yeti",
     "highlightjs": "~8.8.0",
+    "keymaster": "~1.6.3",
     "ngInfiniteScroll": "~1.2.1",
     "restangular": "~1.5.1"
   },

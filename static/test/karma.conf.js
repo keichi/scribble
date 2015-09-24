@@ -38,6 +38,7 @@ module.exports = function(config) {
       'bower_components/blueimp-md5/js/md5.js',
       'bower_components/bootswatch-dist/js/bootstrap.js',
       'bower_components/highlightjs/highlight.pack.js',
+      'bower_components/keymaster/keymaster.js',
       'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
       'bower_components/lodash/lodash.js',
       'bower_components/restangular/dist/restangular.js',
