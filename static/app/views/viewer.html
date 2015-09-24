@@ -1,6 +1,7 @@
 <div class="col-scrollable note-list">
-  <div infinite-scroll="paginate()" infinite-scroll-distance="1"
-       infinite-scroll-container="'.col-scrollable.note-list'" class="list-group">
+  <div infinite-scroll="paginate()" infinite-scroll-distance="0"
+       infinite-scroll-container="'.col-scrollable.note-list'"
+       infinite-scroll-disabled="isBusy" class="list-group">
     <a ng-repeat="note in notes"
        ui-sref-active="active"
        ui-sref=".detail({noteId: note.id})"
