@@ -5,7 +5,7 @@
     <a ng-repeat="note in notes"
        ui-sref-active="active"
        ui-sref=".detail({noteId: note.id})"
-       class="list-group-item">
+       class="note-list-item list-group-item">
       <div class="clearfix">
         <h4 class="pull-left list-group-item-heading">{{ note.title }}</h4>
         <div class="pull-right">{{ note.updatedAt | date:"short" }}</div>

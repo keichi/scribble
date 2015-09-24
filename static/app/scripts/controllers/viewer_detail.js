@@ -19,6 +19,7 @@ angular.module("scribbleApp")
         ModalHelperService.alert("Deleting Note", "Are you sure you want to delete this note?")
           .then(function() {
             $scope.currentNote.remove();
+            $scope.$parent.removeNote($stateParams.noteId);
             $state.go("root.viewer");
           });
       };

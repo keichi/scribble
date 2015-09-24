@@ -1,3 +1,4 @@
+/* global _ */
 "use strict";
 
 /**
@@ -36,6 +37,12 @@ angular.module("scribbleApp")
           .finally(function() {
             $scope.isBusy = false;
           });
+      };
+
+      $scope.removeNote = function(noteId) {
+        _.remove($scope.notes, function(note) {
+          return note.id === parseInt(noteId, 10);
+        });
       };
     }
   ]);
