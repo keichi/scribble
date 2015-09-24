@@ -59,9 +59,6 @@ func TestListNotes(t *testing.T) {
 
 	notes := resp.([]interface{})
 	assert.EqualValues(3, len(notes))
-	assert.Equal("Test Title 1", notes[0].(map[string]interface{})["title"])
-	assert.Equal("Test Title 2", notes[1].(map[string]interface{})["title"])
-	assert.Equal("Test Title 3", notes[2].(map[string]interface{})["title"])
 }
 
 func TestListNotesPagination(t *testing.T) {

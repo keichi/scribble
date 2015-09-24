@@ -60,8 +60,6 @@ func TestListNotesAuth(t *testing.T) {
 
 	notes := resp.([]interface{})
 	assert.EqualValues(2, len(notes))
-	assert.Equal("Test Title 1", notes[0].(map[string]interface{})["title"])
-	assert.Equal("Test Title 3", notes[1].(map[string]interface{})["title"])
 }
 
 func TestGetNoteAuth(t *testing.T) {
