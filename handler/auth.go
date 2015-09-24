@@ -1,14 +1,15 @@
 package handler
 
 import (
-	"golang.org/x/net/context"
+	"fmt"
+	"time"
 	"net/http"
 
 	"gopkg.in/gorp.v1"
+	"golang.org/x/net/context"
 
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/model"
-	"time"
 )
 
 const (
@@ -21,17 +22,21 @@ type registerRequest struct {
 	Password string `json:"password"`
 }
 
+func (req *registerRequest) Validate() error {
+	if req.Email == "" {
+		return fmt.Errorf("email is empty")
+	}
+
+	if req.Password == "" {
+		return fmt.Errorf("password is empty")
+	}
+
+	return nil
+}
+
 func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	input := req.(*registerRequest)
 	dbMap := ctx.Value("db").(*gorp.DbMap)
-
-	if input.Email == "" {
-		return nil, &ErrorResponse{http.StatusBadRequest, "email is empty"}
-	}
-
-	if input.Password == "" {
-		return nil, &ErrorResponse{http.StatusBadRequest, "password is empty"}
-	}
 
 	count, err := dbMap.SelectInt("select count(id) from users where email = ?", input.Email)
 	if err != nil {
@@ -61,6 +66,18 @@ type loginRequest struct {
 	Password string `json:"password"`
 }
 
+func (req *loginRequest) Validate() error {
+	if req.Email == "" {
+		return fmt.Errorf("email is empty")
+	}
+
+	if req.Password == "" {
+		return fmt.Errorf("password is empty")
+	}
+
+	return nil
+}
+
 func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 	input := req.(*loginRequest)
 	dbMap := ctx.Value("db").(*gorp.DbMap)
@@ -68,14 +85,6 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 
 	if authCtx.IsLoggedIn {
 		return nil, &ErrorResponse{http.StatusBadRequest, "already logged in"}
-	}
-
-	if input.Email == "" {
-		return nil, &ErrorResponse{http.StatusBadRequest, "email is empty"}
-	}
-
-	if input.Password == "" {
-		return nil, &ErrorResponse{http.StatusBadRequest, "password is empty"}
 	}
 
 	var user model.User

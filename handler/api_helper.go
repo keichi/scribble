@@ -34,6 +34,10 @@ func (err *ErrorResponse) Render(w http.ResponseWriter) {
 	})
 }
 
+type Validator interface {
+	Validate() error
+}
+
 type emptyRequest struct{}
 
 // wrapJSONHandler wraps JsonHandler as a kami.HandlerFunc
@@ -56,6 +60,16 @@ func wrapJSONHandler(v interface{}, h JSONHandler) kami.HandlerFunc {
 					"message": fmt.Sprintf("JSON decode fail: %v", err),
 				})
 				return
+			}
+
+			if v, ok := input.(Validator); ok {
+				if err := v.Validate(); err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					encoder.Encode(map[string]string{
+						"message": err.Error(),
+					})
+					return
+				}
 			}
 		}
 

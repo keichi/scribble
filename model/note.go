@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"time"
 
 	"gopkg.in/gorp.v1"
@@ -42,6 +43,14 @@ func (note *Note) Authorize(user *User, action AuthorizedAction) bool {
 	}
 
 	return false
+}
+
+func (note *Note) Validate() error {
+	if note.Title == "" {
+		return fmt.Errorf("title is empty")
+	}
+
+	return nil
 }
 
 // PreDelete is fired before note is deleted and deletes associated images
