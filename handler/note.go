@@ -50,12 +50,13 @@ func listNotes(ctx context.Context, req interface{}) (interface{}, *ErrorRespons
 	var err error
 	if auth.IsLoggedIn {
 		_, err = db.Select(&notes, `select * from notes where share_state = ?
-				or share_state = ? and owner_id = ? limit ? offset ?`,
+				or share_state = ? and owner_id = ? order by updated_at desc
+				limit ? offset ?`,
 			model.ShareStatePublic, model.ShareStatePrivate,
 			auth.User.ID, limit, offset)
 	} else {
 		_, err = db.Select(&notes, `select * from notes where share_state = ?
-				limit ? offset ?`,
+				order by updated_at desc limit ? offset ?`,
 			model.ShareStatePublic, limit, offset)
 	}
 	if err != nil {
