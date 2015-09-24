@@ -10,6 +10,7 @@ import (
 	"github.com/goamz/goamz/s3"
 	"github.com/goamz/goamz/s3/s3test"
 	"github.com/guregu/kami"
+	"github.com/mattes/migrate/migrate"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/net/context"
 	"gopkg.in/gorp.v1"
@@ -20,6 +21,11 @@ import (
 )
 
 func initDB() *gorp.DbMap {
+	errors, ok := migrate.UpSync("sqlite3://scribble.db", "./migrations")
+	if !ok {
+		panic(errors)
+	}
+
 	// TODO Use MySQL at production environment
 	db, err := sql.Open("sqlite3", "scribble.db")
 	if err != nil {
@@ -31,7 +37,6 @@ func initDB() *gorp.DbMap {
 	dbMap.AddTableWithName(model.Session{}, "sessions").SetKeys(true, "ID")
 	dbMap.AddTableWithName(model.Note{}, "notes").SetKeys(true, "ID")
 	dbMap.AddTableWithName(model.Image{}, "images").SetKeys(true, "ID")
-	dbMap.CreateTablesIfNotExists()
 
 	return dbMap
 }
