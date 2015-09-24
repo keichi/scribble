@@ -51,8 +51,10 @@ angular.module("scribbleApp")
       $scope.save = function() {
         if (isNew) {
           Restangular.all("notes").post($scope.note)
-            .then(function() {
+            .then(function(resp) {
               Notification.success("Note successfully saved.");
+              $scope.note = resp;
+              isNew = false;
             })
             .catch(function() {
               Notification.error("Note could not be saved.");
