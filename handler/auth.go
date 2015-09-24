@@ -2,11 +2,11 @@ package handler
 
 import (
 	"fmt"
-	"time"
 	"net/http"
+	"time"
 
-	"gopkg.in/gorp.v1"
 	"golang.org/x/net/context"
+	"gopkg.in/gorp.v1"
 
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/model"

@@ -75,10 +75,10 @@ func TestListNotesPagination(t *testing.T) {
 
 	for i := 1; i <= 100; i++ {
 		dbMap.Insert(&model.Note{
-			ID:        0,
-			Title:     fmt.Sprintf("Test Title %d", i),
-			Content:   "lorem ipsum dolor sit amet consetetur.",
-			OwnerID:   0,
+			ID:      0,
+			Title:   fmt.Sprintf("Test Title %d", i),
+			Content: "lorem ipsum dolor sit amet consetetur.",
+			OwnerID: 0,
 		})
 	}
 
