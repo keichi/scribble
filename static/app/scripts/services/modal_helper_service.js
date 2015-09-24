@@ -37,9 +37,6 @@ angular.module("scribbleApp")
       $scope.title = title;
       $scope.message = message;
 
-      console.log(title);
-      console.log(message);
-
       $scope.ok = function () {
         $modalInstance.close(true);
       };
