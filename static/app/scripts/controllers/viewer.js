@@ -1,4 +1,4 @@
-/* global _ */
+/* global _, key */
 "use strict";
 
 /**
@@ -9,10 +9,9 @@
  * Controller of the scribbleApp
  */
 angular.module("scribbleApp")
-  .controller("ViewerCtrl", ["$scope", "$stateParams", "Restangular",
-    function ($scope, $stateParams, Restangular) {
+  .controller("ViewerCtrl", ["$scope", "Restangular",
+    function ($scope, Restangular) {
       $scope.notes = [];
-      $scope.currentNoteId = $stateParams.noteId;
       $scope.isBusy = false;
 
       var nextOffset = 0;
@@ -44,5 +43,15 @@ angular.module("scribbleApp")
           return note.id === parseInt(noteId, 10);
         });
       };
+
+      key("enter", "viewer", function(e) {
+        e.preventDefault();
+        $scope.$broadcast("viewer.editNote");
+      });
+      key("backspace", "viewer", function(e) {
+        e.preventDefault();
+        $scope.$broadcast("viewer.deleteNote");
+      });
+      key.setScope("viewer");
     }
   ]);

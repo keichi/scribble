@@ -23,5 +23,13 @@ angular.module("scribbleApp")
             $state.go("root.viewer");
           });
       };
+
+      $scope.$on("viewer.editNote", function() {
+        $state.go("root.editor", {noteId: $stateParams.noteId});
+      });
+
+      $scope.$on("viewer.deleteNote", function() {
+        $scope.remove();
+      });
     }
   ]);

@@ -1,3 +1,4 @@
+/* global key */
 "use strict";
 
 /**
@@ -37,6 +38,9 @@ angular.module("scribbleApp")
       $scope.title = title;
       $scope.message = message;
 
+      var prevKeyScope = key.getScope();
+      key.setScope("modal");
+
       $scope.ok = function () {
         $modalInstance.close(true);
       };
@@ -44,5 +48,9 @@ angular.module("scribbleApp")
       $scope.cancel = function () {
         $modalInstance.dismiss("cancel");
       };
+
+      $scope.$on("modal.closing", function() {
+        key.setScope(prevKeyScope);
+      })
     }
   ]);
