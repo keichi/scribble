@@ -4,6 +4,9 @@
   color: #000;
   padding: 0.2em 0;
 }
+*:focus {
+  outline: 0;
+}
 
 html {
   height: 100%;
