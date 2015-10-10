@@ -1,6 +1,6 @@
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email VARCHAR(128),
+  email VARCHAR(128) UNIQUE,
   password_hash VARCHAR(64),
   created_at INT64,
   updated_at INT64
@@ -8,7 +8,7 @@ CREATE TABLE users (
 
 CREATE TABLE sessions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  token VARCHAR(32),
+  token VARCHAR(32) UNIQUE,
   user_id INT64,
   expires_at INT64,
   created_at INT64,
@@ -28,7 +28,7 @@ CREATE TABLE notes (
 CREATE TABLE images (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   content_type VARCHAR(32),
-  uuid VARCHAR(36),
+  uuid VARCHAR(36) UNIQUE,
   url VARCHAR(128),
   note_id INT64,
   created_at INT64,
