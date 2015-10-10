@@ -1,6 +1,7 @@
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email VARCHAR(128) UNIQUE,
+  password_salt VARCHAR(64),
   password_hash VARCHAR(64),
   created_at INT64,
   updated_at INT64
