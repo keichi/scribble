@@ -91,7 +91,7 @@ angular
           }
         });
   }])
-  .constant("API_ROOT", "http://localhost:8000/api")
+  .constant("API_ROOT", "/api")
   .config(["RestangularProvider", "API_ROOT",
     function (RestangularProvider, API_ROOT) {
       RestangularProvider.setBaseUrl(API_ROOT);
