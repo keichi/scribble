@@ -116,7 +116,7 @@ func main() {
 	// Ping API
 	kami.Get("/api/ping", handler.Ping)
 
-	fileServer := http.FileServer(http.Dir("static"))
+	fileServer := http.FileServer(http.Dir("static/dist"))
 	kami.Get("/", fileServer)
 	kami.Get("/404.html", fileServer)
 	kami.Get("/robots.txt", fileServer)
