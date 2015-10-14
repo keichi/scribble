@@ -116,17 +116,6 @@ func main() {
 	// Ping API
 	kami.Get("/api/ping", handler.Ping)
 
-	// TODO Allow any CORS request -- only during development!
-	kami.Use("/", func(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, X-Scribble-Session")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-		return ctx
-	})
-	kami.Options("/*path", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
-
 	fileServer := http.FileServer(http.Dir("static"))
 	kami.Get("/", fileServer)
 	kami.Get("/404.html", fileServer)
