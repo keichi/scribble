@@ -106,9 +106,11 @@ func TestLogin(t *testing.T) {
 	assert.Equal(map[string]interface{}{"message": "already logged in"}, resp)
 	authCtx.IsLoggedIn = false
 
+	salt := auth.NewToken()
 	user := model.User{
 		Email:        "test@example.com",
-		PasswordHash: auth.HashPassword("test@example.com", "testpassword"),
+		PasswordSalt: salt,
+		PasswordHash: auth.HashPassword("test@example.com" + salt, "testpassword"),
 	}
 
 	err := dbMap.Insert(&user)
@@ -116,11 +118,19 @@ func TestLogin(t *testing.T) {
 
 	resp = request(t, server.URL, http.StatusBadRequest,
 		map[string]string{
-			"email":    "test@exmaple.com",
-			"password": "test",
+			"email":    "unknown-user@example.com",
+			"password": "testpassword",
 		},
 	)
-	assert.Equal(map[string]interface{}{"message": "email or password is wrong"}, resp)
+	assert.Equal(map[string]interface{}{"message": "user does not exist"}, resp)
+
+	resp = request(t, server.URL, http.StatusBadRequest,
+		map[string]string{
+			"email":    "test@example.com",
+			"password": "wrongpassword",
+		},
+	)
+	assert.Equal(map[string]interface{}{"message": "password is wrong"}, resp)
 
 	resp = request(t, server.URL, http.StatusOK,
 		map[string]string{

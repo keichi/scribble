@@ -2,11 +2,11 @@ package handler
 
 import (
 	"fmt"
-	"time"
 	"net/http"
+	"time"
 
-	"gopkg.in/gorp.v1"
 	"golang.org/x/net/context"
+	"gopkg.in/gorp.v1"
 
 	"github.com/keichi/scribble/auth"
 	"github.com/keichi/scribble/model"
@@ -46,9 +46,12 @@ func register(ctx context.Context, req interface{}) (interface{}, *ErrorResponse
 		return nil, &ErrorResponse{http.StatusBadRequest, "user exists"}
 	}
 
+	salt := auth.NewToken()
+
 	user := model.User{
 		Email:        input.Email,
-		PasswordHash: auth.HashPassword(input.Email, input.Password),
+		PasswordSalt: salt,
+		PasswordHash: auth.HashPassword(input.Email + salt, input.Password),
 	}
 
 	if err := dbMap.Insert(&user); err != nil {
@@ -89,11 +92,15 @@ func login(ctx context.Context, req interface{}) (interface{}, *ErrorResponse) {
 
 	var user model.User
 
-	passwordHash := auth.HashPassword(input.Email, input.Password)
 
-	err := dbMap.SelectOne(&user, "select * from users where email = ? and password_hash = ?", input.Email, passwordHash)
+	err := dbMap.SelectOne(&user, "select * from users where email = ?", input.Email)
 	if err != nil {
-		return nil, &ErrorResponse{http.StatusBadRequest, "email or password is wrong"}
+		return nil, &ErrorResponse{http.StatusBadRequest, "user does not exist"}
+	}
+
+	passwordHash := auth.HashPassword(input.Email + user.PasswordSalt, input.Password)
+	if passwordHash != user.PasswordHash {
+		return nil, &ErrorResponse{http.StatusBadRequest, "password is wrong"}
 	}
 
 	session := model.Session{

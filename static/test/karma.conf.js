@@ -32,6 +32,7 @@ module.exports = function(config) {
       'bower_components/angular-marked/angular-marked.js',
       'bower_components/angular-route/angular-route.js',
       'bower_components/angular-sanitize/angular-sanitize.js',
+      'bower_components/ace-builds/src-min/ace.js',
       'bower_components/angular-ui-ace/ui-ace.js',
       'bower_components/angular-ui-notification/dist/angular-ui-notification.min.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',

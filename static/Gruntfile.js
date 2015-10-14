@@ -8,6 +8,7 @@
 // 'test/spec/**/*.js'
 
 module.exports = function (grunt) {
+  grunt.loadNpmTasks('grunt-connect-proxy');
 
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
@@ -80,6 +81,7 @@ module.exports = function (grunt) {
           open: true,
           middleware: function (connect) {
             return [
+              require('grunt-connect-proxy/lib/utils').proxyRequest,
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
@@ -115,7 +117,16 @@ module.exports = function (grunt) {
           open: true,
           base: '<%= yeoman.dist %>'
         }
-      }
+      },
+      proxies: [
+        {
+          context: '/api',
+          host: 'localhost',
+          port: 8000,
+          https: false,
+          xforward: false
+        }
+      ]
     },
 
     // Make sure code styles are up to par and there are no obvious mistakes
@@ -359,7 +370,6 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>',
           src: [
             '*.{ico,png,txt}',
-            '.htaccess',
             '*.html',
             'images/{,*/}*.{webp}',
             'styles/fonts/{,*/}*.*'
@@ -417,6 +427,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'wiredep',
+      'configureProxies:server',
       'concurrent:server',
       'autoprefixer:server',
       'connect:livereload',

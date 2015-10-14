@@ -6,14 +6,11 @@ import (
 	"encoding/base64"
 )
 
-// TODO Read these values from environment variables
 const strechCount int = 1000
-const fixedSalt string = "kRAKG5PRXZryyrPnMAXwCfGYHFfxi"
 
 // HashPassword generates SHA256 hash of the password with salt & stretching
-func HashPassword(email string, password string) string {
+func HashPassword(salt string, password string) string {
 	pwd := []byte(password)
-	salt := []byte(email + fixedSalt)
 	hash := [32]byte{}
 
 	for i := 0; i < strechCount; i++ {

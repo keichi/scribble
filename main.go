@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"log"
 	"net/http"
 	"os"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/goamz/goamz/s3"
 	"github.com/goamz/goamz/s3/s3test"
 	"github.com/guregu/kami"
+	"github.com/mattes/migrate/migrate"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/net/context"
 	"gopkg.in/gorp.v1"
@@ -20,6 +20,11 @@ import (
 )
 
 func initDB() *gorp.DbMap {
+	errors, ok := migrate.UpSync("sqlite3://scribble.db", "./migrations")
+	if !ok {
+		panic(errors)
+	}
+
 	// TODO Use MySQL at production environment
 	db, err := sql.Open("sqlite3", "scribble.db")
 	if err != nil {
@@ -31,35 +36,35 @@ func initDB() *gorp.DbMap {
 	dbMap.AddTableWithName(model.Session{}, "sessions").SetKeys(true, "ID")
 	dbMap.AddTableWithName(model.Note{}, "notes").SetKeys(true, "ID")
 	dbMap.AddTableWithName(model.Image{}, "images").SetKeys(true, "ID")
-	dbMap.CreateTablesIfNotExists()
 
 	return dbMap
 }
 
 func initS3() *s3.Bucket {
-	//	auth, err := aws.EnvAuth()
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//
-	//	s3 := s3.New(auth, aws.APNortheast)
-	//	bucket := s3.Bucket("scribble-image-store")
-	//
-	//	return bucket
+	region := aws.Region{}
+	auth, err := aws.EnvAuth()
 
-	// TODO Fake S3 server -- only use it during development
-	srv, err := s3test.NewServer(&s3test.Config{})
 	if err != nil {
-		panic(err)
-	}
-	region := aws.Region{
-		Name:                 "dummy-region-1",
-		S3Endpoint:           srv.URL(),
-		S3LocationConstraint: true,
+		srv, err := s3test.NewServer(&s3test.Config{})
+		if err != nil {
+			panic(err)
+		}
+		region = aws.Region{
+			Name:                 "dummy-region-1",
+			S3Endpoint:           srv.URL(),
+			S3LocationConstraint: true,
+		}
+	} else {
+		region = aws.APNortheast
 	}
 
-	bucket := s3.New(aws.Auth{}, region).Bucket("scribble-image-store")
-	bucket.PutBucket(s3.PublicRead)
+	bucketName := os.Getenv("S3_BUCKET")
+	if bucketName == "" {
+		bucketName = "scribble-image-store"
+	}
+
+	s3 := s3.New(auth, region)
+	bucket := s3.Bucket(bucketName)
 
 	return bucket
 }
@@ -67,9 +72,6 @@ func initS3() *s3.Bucket {
 func main() {
 	dbMap := initDB()
 	defer dbMap.Db.Close()
-
-	// TODO Trace SQL only during development
-	dbMap.TraceOn("[gorp]", log.New(os.Stdout, "scribble: ", log.Lmicroseconds))
 
 	bucket := initS3()
 
@@ -111,16 +113,17 @@ func main() {
 	kami.Put("/api/my/notes/:noteId", handler.UpdateNote)
 	kami.Delete("/api/my/notes/:noteId", handler.DeleteNote)
 
-	// TODO Allow any CORS request -- only during development!
-	kami.Use("/", func(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, X-Scribble-Session")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-		return ctx
-	})
-	kami.Options("/*path", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
+	// Ping API
+	kami.Get("/api/ping", handler.Ping)
+
+	fileServer := http.FileServer(http.Dir("static/dist"))
+	kami.Get("/", fileServer)
+	kami.Get("/404.html", fileServer)
+	kami.Get("/robots.txt", fileServer)
+	kami.Get("/favicon.ico", fileServer)
+	kami.Get("/fonts/*path", fileServer)
+	kami.Get("/scripts/*path", fileServer)
+	kami.Get("/styles/*path", fileServer)
 
 	kami.Serve()
 }
