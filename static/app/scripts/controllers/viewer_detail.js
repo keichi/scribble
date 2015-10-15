@@ -16,6 +16,15 @@ angular.module("scribbleApp")
         $scope.currentNote = note;
       });
 
+      $scope.download = function() {
+        var blob = new Blob([$scope.currentNote.content],{type: "text/plain"});
+        var blobURL = (window.URL || window.webkitURL).createObjectURL(blob);
+        var anchor = document.createElement("a");
+        anchor.download = $scope.currentNote.title;
+        anchor.href = blobURL;
+        anchor.click();
+      };
+
       $scope.remove = function() {
         ModalHelperService.alert("Deleting Note", "Are you sure you want to delete this note?")
           .then(function() {
