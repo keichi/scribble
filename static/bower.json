@@ -28,6 +28,12 @@
       "main": [
         "./src-min/ace.js"
       ]
+    },
+    "highlightjs": {
+      "main": [
+        "highlight.pack.js",
+        "styles/github.css"
+      ]
     }
   },
   "appPath": "app",
